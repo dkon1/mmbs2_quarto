@@ -1,0 +1,23 @@
+project:
+  type: book
+  output-dir: docs
+  
+book:
+  title: "Mathematical Methods for Biology, Part 2"
+  author: "Dmitry Kondrashov"
+  #date: "9/11/2022"
+  chapters:
+    - index.qmd
+    - PCA.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    code-fold: false   
+  pdf:
+    documentclass: scrreprt
+
+jupyter: python3

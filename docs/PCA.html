@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Mathematical Methods for Biology, Part 2 - 1&nbsp; Principal Component Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Mathematical Methods for Biology, Part 2</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#motivation-simplifying-complex-data" id="toc-motivation-simplifying-complex-data" class="nav-link active" data-scroll-target="#motivation-simplifying-complex-data"><span class="toc-section-number">1.1</span>  Motivation: simplifying complex data</a></li>
+  <li><a href="#pca-algorithm" id="toc-pca-algorithm" class="nav-link" data-scroll-target="#pca-algorithm"><span class="toc-section-number">1.2</span>  PCA algorithm</a></li>
+  <li><a href="#optimization-by-explained-variance" id="toc-optimization-by-explained-variance" class="nav-link" data-scroll-target="#optimization-by-explained-variance"><span class="toc-section-number">1.3</span>  Optimization by explained variance</a></li>
+  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction"><span class="toc-section-number">1.4</span>  Dimensionality reduction</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Principal Component Analysis (PCA) is one of the most popular techniques to perform “dimensionality reduction” of complex data sets. If we see the data with many variables as points in a high-dimensional space, we can compute new variables as linear combinations of the original ones and represent each data point as a set of coordinates in the new variables. In this way, we can project large-dimensional data sets onto low-dimensional spaces and lose the least information about the data.</p>
+<section id="motivation-simplifying-complex-data" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="motivation-simplifying-complex-data"><span class="header-section-number">1.1</span> Motivation: simplifying complex data</h2>
+<p>Suppose we have a data set with <span class="math inline">\(n\)</span> variables and <span class="math inline">\(m\)</span> observations of each (typically, with <span class="math inline">\(n \gg m\)</span>), in which the <span class="math inline">\(m\)</span> rows are observations and the <span class="math inline">\(n\)</span> columns are the variables. Each row of this matrix defines a point in the Euclidean space <span class="math inline">\(\mathbb R^n\)</span>. Many biological data sets, e.g.&nbsp;gene expression {numref}<code>fig-micro-array</code>, RNAseq, medical imaging, can contain thousands or more variables, which poses major challenges both for visualization and computational tasks. PCA provides the best representation of such a data set in terms of a smaller set of variables, while capturing as much variance as possible.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/micro_array.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Image of a microarray plate, (http://exploreable.files.wordpress.com/2011/04/array.jpg). Here each dot is a different variable (different gene) and this image in just one set of observations that will be placed into a row of the data matrix.</figcaption><p></p>
+</figure>
+</div>
+<p>The intuition behind finding these new collective variables rests on the fact that the original variables have relationships. This is typically measured using covariance, which quantified how much a pair variables tends to move in the same direction (positive covariance) or in opposite directions (negative covariance). If two variables are tighlty coupled, one can replace the two measurements with one, which will describe how much the two of them are deviating in some collective way.</p>
+<p>It is helpful to think of this geometrically: if the variables are related, the scatterplot of observed data points will have a shape. The goal of PCA is to find directions in the <span class="math inline">\(n\)</span>-dimensional space of observations that best match the shape of the data cloud.</p>
+</section>
+<section id="pca-algorithm" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="pca-algorithm"><span class="header-section-number">1.2</span> PCA algorithm</h2>
+<p>We start with a data set <span class="math inline">\(X\)</span> in the form of a <span class="math inline">\(m\)</span> by <span class="math inline">\(n\)</span> matrix. The first step is to decide which are the variables and which are the observations. For example, in the case of the microarray experiment, it usually makes sense to consider different genes the variables, and to use principal components to see which genes tend to be expressed together with others.</p>
+<p>The second step is to compute the variance-covariance matrix of the <span class="math inline">\(N\)</span> variables.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>variance-covariance</em> matrix <span class="math inline">\(C\)</span> of a data set <span class="math inline">\(X\)</span> with <span class="math inline">\(n\)</span> variables <span class="math inline">\(x_i\)</span> and <span class="math inline">\(m\)</span> observations is an <span class="math inline">\(n\)</span> by <span class="math inline">\(n\)</span> matrix that contains pairwise variances between all <span class="math inline">\(n\)</span> variables, so that its <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span> element is:</p>
+<p><span class="math display">\[C_{i,j} = Cov(X_i,X_j)\]</span></p>
+</div>
+</div>
+<p>The third step is to diagonalize (find the eigenvalues and eigenvectors) of the covariance matrix <span class="math inline">\(C\)</span>. The eigenvectors are the principal components of the <span class="math inline">\(n\)</span> variables in the data set, representing linear combinations of the variables that best fit the data. Diagonalizing an <span class="math inline">\(n\)</span> by <span class="math inline">\(n\)</span> matrix results in <span class="math inline">\(n\)</span> eigenvectors, so in order to simplify the description one needs to choose the most significant ones. This is accomplished by choosing a subset of <span class="math inline">\(k\)</span> principal components with the largest eigenvalues. Here are the steps of principal component analysis (PCA):</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+PCA algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Obtain a dataset as a <span class="math inline">\(m\)</span> by <span class="math inline">\(n\)</span> matrix, with <span class="math inline">\(n\)</span> variables and <span class="math inline">\(m\)</span> observations</li>
+<li>Compute covariances for variable i and variable j, put them in the covariance matrix <span class="math inline">\(C\)</span></li>
+<li>Compute the eigenvalues and eigenvectors (principal components) of the matrix <span class="math inline">\(C\)</span></li>
+<li>Order the principal component by size of eigenvalues from largest to smallest and select a few as the new coordinates</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="optimization-by-explained-variance" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="optimization-by-explained-variance"><span class="header-section-number">1.3</span> Optimization by explained variance</h2>
+<p>The reason that we order the PCs by their eigenvalues is that they measure the amount of variance captured by each principal component. In that, they are equivalent to the coefficient of determination <span class="math inline">\(r^2\)</span> in linear regression. The sum of all the eigenvalues is equal to the total variance of all the variables:</p>
+<p><span class="math display">\[ \sum_i \lambda_i = \sum Var(X_i)\]</span></p>
+<p>and the fraction of variance captured by the a principal component is:</p>
+<p><span class="math display">\[ Var(PC_i) = \frac{\lambda_i}{\sum_i \lambda_i}\]</span></p>
+<p>The theory behind this rests on some relatively sophisticated linear algebra, in particular what is called the singular value decomposition (SVD) and the Eckart-Young Mirsky theorem. Here is a nice video by Gilbert Strang that explains this:<a href="https://www.youtube.com/watch?v=Y4f7K9XF04k">Strang lecture</a></p>
+</section>
+<section id="dimensionality-reduction" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="dimensionality-reduction"><span class="header-section-number">1.4</span> Dimensionality reduction</h2>
+<p>After sorting the principal components and selecting <span class="math inline">\(k\)</span> largest eigenvalues, we are ready to simplify the data. This means that we can express a data set of <span class="math inline">\(n\)</span> variables in terms of the coordinate set of <span class="math inline">\(k\)</span> principal components. In order to express the data set in this new system of coordinates, we compute the projection coefficients for each measurement onto a give principal component. Suppose that <span class="math inline">\(Y\)</span> is a set of measurements of <span class="math inline">\(N\)</span> variables (e.g.&nbsp;genes) and <span class="math inline">\(P_i\)</span> is the <span class="math inline">\(i\)</span>-the principal component. Then the projection coefficient of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(P_i\)</span> is the dot product of the two vectors (both of length <span class="math inline">\(N\)</span>) divided by the squared norm (length) of the PC:</p>
+<p><span class="math display">\[ c_i = \frac{\langle Y, P_i\rangle}{|| P_i ||^2} \]</span></p>
+<p>If the eigenvectors are normalized prior to the computation (as they are by most computational packages), then the projection coefficient is just the dot product. Then the coefficients can be obtained for all of the measurements in the data set <span class="math inline">\(X\)</span> (<span class="math inline">\(m\)</span> by <span class="math inline">\(n\)</span>) by multiplying it by the matrix <span class="math inline">\(P\)</span> containing the first <span class="math inline">\(k\)</span> eigenvectors (principal components), which has <span class="math inline">\(n\)</span> rows and <span class="math inline">\(k\)</span> columns. The result is an <span class="math inline">\(m\)</span> by <span class="math inline">\(k\)</span> matrix <span class="math inline">\(C\)</span> containing <span class="math inline">\(k\)</span> coefficients for each of the <span class="math inline">\(m\)</span> measurements:</p>
+<p><span class="math display">\[
+C = D \times P
+\]</span></p>
+<p>Here is the outline for the transformation:</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Dimensionality reduction
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Subtract the mean of each observation from the data matrix (if it has <span class="math inline">\(M\)</span> observations in rows and <span class="math inline">\(N\)</span> variables as columns, subtract the mean of each row from it)</li>
+<li>Compute the projection coefficients <span class="math inline">\(C = D \times P\)</span> for each measurement and each of the <span class="math inline">\(k\)</span> principal components</li>
+<li>Plot or otherwise display these coefficients as coordinates in the new vector system of the <span class="math inline">\(k\)</span> PCs. This can be used to cluster or otherwise find patterns in the observations.</li>
+</ol>
+</div>
+</div>
+<p>The entire data set can be expressed in a low-dimensional setting, for instance plotted in the plane of two principal components with coordinates <span class="math inline">\((c_{i,1}, c_{i,2})\)</span> for each data measurement <span class="math inline">\(i\)</span>. This is often useful for clustering, or grouping experimental conditions based on the similarity of their principal component representations. Biologists frequently do this with complex data sets, for example grouping different cell lines together by their gene expression profiles.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
