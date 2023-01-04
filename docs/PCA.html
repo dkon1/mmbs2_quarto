@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -119,9 +182,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#motivation-simplifying-complex-data" id="toc-motivation-simplifying-complex-data" class="nav-link active" data-scroll-target="#motivation-simplifying-complex-data"><span class="toc-section-number">1.1</span>  Motivation: simplifying complex data</a></li>
-  <li><a href="#pca-algorithm" id="toc-pca-algorithm" class="nav-link" data-scroll-target="#pca-algorithm"><span class="toc-section-number">1.2</span>  PCA algorithm</a></li>
-  <li><a href="#optimization-by-explained-variance" id="toc-optimization-by-explained-variance" class="nav-link" data-scroll-target="#optimization-by-explained-variance"><span class="toc-section-number">1.3</span>  Optimization by explained variance</a></li>
-  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction"><span class="toc-section-number">1.4</span>  Dimensionality reduction</a></li>
+  <li><a href="#linearity-and-vector-spaces" id="toc-linearity-and-vector-spaces" class="nav-link" data-scroll-target="#linearity-and-vector-spaces"><span class="toc-section-number">1.2</span>  Linearity and vector spaces</a>
+  <ul class="collapse">
+  <li><a href="#linear-independence-and-basis-vectors" id="toc-linear-independence-and-basis-vectors" class="nav-link" data-scroll-target="#linear-independence-and-basis-vectors"><span class="toc-section-number">1.2.1</span>  Linear independence and basis vectors</a></li>
+  <li><a href="#projections-and-changes-of-basis" id="toc-projections-and-changes-of-basis" class="nav-link" data-scroll-target="#projections-and-changes-of-basis"><span class="toc-section-number">1.2.2</span>  Projections and changes of basis</a></li>
+  </ul></li>
+  <li><a href="#pca-algorithm" id="toc-pca-algorithm" class="nav-link" data-scroll-target="#pca-algorithm"><span class="toc-section-number">1.3</span>  PCA algorithm</a></li>
+  <li><a href="#optimization-by-explained-variance" id="toc-optimization-by-explained-variance" class="nav-link" data-scroll-target="#optimization-by-explained-variance"><span class="toc-section-number">1.4</span>  Optimization by explained variance</a></li>
+  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction"><span class="toc-section-number">1.5</span>  Dimensionality reduction</a></li>
   </ul>
 </nav>
     </div>
@@ -156,10 +224,180 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p>The intuition behind finding these new collective variables rests on the fact that the original variables have relationships. This is typically measured using covariance, which quantified how much a pair variables tends to move in the same direction (positive covariance) or in opposite directions (negative covariance). If two variables are tighlty coupled, one can replace the two measurements with one, which will describe how much the two of them are deviating in some collective way.</p>
-<p>It is helpful to think of this geometrically: if the variables are related, the scatterplot of observed data points will have a shape. The goal of PCA is to find directions in the <span class="math inline">\(n\)</span>-dimensional space of observations that best match the shape of the data cloud.</p>
+<p>It is helpful to think of this geometrically: if the variables are related, the scatterplot of observed data points will have a shape. The goal of PCA is to find directions in the <span class="math inline">\(n\)</span>-dimensional space of observations that best match the shape of the data cloud. This requires tools from linear algebra, specifically the technique of change of basis.</p>
 </section>
-<section id="pca-algorithm" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="pca-algorithm"><span class="header-section-number">1.2</span> PCA algorithm</h2>
+<section id="linearity-and-vector-spaces" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="linearity-and-vector-spaces"><span class="header-section-number">1.2</span> Linearity and vector spaces</h2>
+<p>We have dealt with linear models in various guises, so now would be a good time to define properly what linearity means. The word comes from the shape of graphs of linear functions of one variable, e.g.&nbsp;<span class="math inline">\(f(x) = a x + b\)</span>, but the algebraic meaning rests on the following two general properties:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <em>linear transformation</em> or <em>linear operator</em> is a mapping <span class="math inline">\(L\)</span> between two sets of vectors with the following properties:</p>
+<ol type="1">
+<li><em>(scalar multiplication)</em> <span class="math inline">\(L(c \vec v) = c L(\vec v)\)</span>; where <span class="math inline">\(c\)</span> is a scalar and <span class="math inline">\(\vec v\)</span> is a vector;</li>
+<li><em>(additive)</em> <span class="math inline">\(L(\vec v_1 + \vec v_2) = L(\vec v_1) + L(\vec v_2)\)</span>; where <span class="math inline">\(\vec v_1\)</span> and <span class="math inline">\(\vec v_2\)</span> are vectors.</li>
+</ol>
+</div>
+</div>
+<p>Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector <span class="math inline">\(\vec v\)</span> into another one: $ A v = u$.</p>
+<p><strong>Example:</strong> Let us multiply the following matrix and vector (specially chosen to make a point):</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Mat <span class="op">=</span> np.array([[<span class="dv">2</span>, <span class="dv">1</span>],[<span class="dv">2</span>, <span class="dv">3</span>]])</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>vec1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>vec2 <span class="op">=</span> Mat<span class="op">@</span>vec1</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vec1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[ 1 -1]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vec2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[ 1 -1]</code></pre>
+</div>
+</div>
+<p>We see that this particular vector <span class="math inline">\((1,-1)\)</span> is unchanged when multiplied by this matrix, or we can say that the matrix multiplication is equivalent to multiplication by 1. Here is another such vector for the same matrix:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vec1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>vec2 <span class="op">=</span> Mat<span class="op">@</span>vec1</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vec1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1 2]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vec2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[4 8]</code></pre>
+</div>
+</div>
+<p>In this case, the vector is changed, but only by multiplication by a constant (4). Thus the geometric direction of the vector remained unchanged.</p>
+<p>The notion of linearity leads to the important idea of combining different vectors:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <em>linear combination</em> of <span class="math inline">\(n\)</span> vectors <span class="math inline">\(\{ \vec v_i \}\)</span> is a weighted sum of these vectors with any real numbers <span class="math inline">\(\{a_i\}\)</span>: <span class="math display">\[ a_1 \vec v_1+ a_2 \vec v_2... + a_n \vec v_n\]</span></p>
+</div>
+</div>
+<p>Linear combinations arise naturally from the notion of linearity, combining the additive property and the scalar multiplication property. Speaking intuitively, a linear combination of vectors produces a new vector that is related to the original set. Linear combinations give a simple way of generating new vectors, and thus invite the following definition for a collection of vectors closed under linear combinations:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <em>vector space</em> is a collection of vectors such that a linear combination of any <span class="math inline">\(n\)</span> vectors is contained in the vector space.</p>
+</div>
+</div>
+<p>The most common examples are the spaces of all real-valued vectors of dimension <span class="math inline">\(n\)</span>, which are denoted by <span class="math inline">\(\mathbb{R}^n\)</span>. For instance, <span class="math inline">\(\mathbb{R}^2\)</span> (pronounced “r two”) is the vector space of two dimensional real-valued vectors such as <span class="math inline">\((1,3)\)</span> and <span class="math inline">\((\pi, -\sqrt{17})\)</span>; similarly, <span class="math inline">\(\mathbb{R}^3\)</span> is the vector space consisting of three dimensional real-valued vectors such as <span class="math inline">\((0.1,0,-5.6)\)</span>. You can convince yourself, by taking linear combinations of vectors, that these vector spaces contain all the points in the usual Euclidean plane and three-dimensional space. The real number line can also be thought of as the vector space <span class="math inline">\(\mathbb{R}^1\)</span>.</p>
+<section id="linear-independence-and-basis-vectors" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="linear-independence-and-basis-vectors"><span class="header-section-number">1.2.1</span> Linear independence and basis vectors</h3>
+<p>How can we describe a vector space without trying to list all of its elements? We know that one can generate an element by taking linear combinations of vectors. It turns out that it is possible to generate (or “span”) a vector space by taking linear combinations of a subset of its vectors. The challenge is to find a minimal subset of subset that is not redundant. In order to do this, we first introduce a new concept:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A set of vectors <span class="math inline">\(\{ \vec v_i \}\)</span> is called <em>linearly independent</em> if the only linear combination involving them that equals the zero vector is if all the coefficients are zero. ( <span class="math inline">\(a_1 \vec v_1 + a_2 \vec v_2 + ... + a_n \vec v_n = 0\)</span> only if <span class="math inline">\(a_i = 0\)</span> for all <span class="math inline">\(i\)</span>.)</p>
+</div>
+</div>
+<p>In the familiar Euclidean spaces, e.g.&nbsp;<span class="math inline">\(\mathbb{R}^2\)</span>, linear independence has a geometric meaning: two vectors are linearly independent if the segments from the origin to the endpoint do not lie on the same line. But it can be shown that any set of three vectors in the plane is linearly dependent, because there are only two dimensions in the vector space. This brings us to the key definition of this section:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <em>basis</em> of a vector space is a linearly independent set of vectors that generate (or span) the vector space. The number of vectors (cardinality) in such a set is called the <em>dimension</em> of the vector space.</p>
+</div>
+</div>
+<p>A vector space generally has many possible bases, as illustrated in figure. In the case of <span class="math inline">\(\mathbb{R}^2\)</span>, the usual (canonical) basis set is <span class="math inline">\(\{(1,0); (0,1)\}\)</span> which obviously generates any point on the plane and is linearly independent. But any two linearly independent vectors can generate any vector in the plane.</p>
+<p><strong>Example:</strong> The vector <span class="math inline">\(\vec r = (2,1)\)</span> can be represented as a linear combination of the two canonical vectors: <span class="math inline">\(\vec r = 2\times (1,0)+1\times (0,1)\)</span>. Let us choose another basis set, say <span class="math inline">\(\{(1,1); (-1,1)\}\)</span> (this is the canonical basis vectors rotated by <span class="math inline">\(\pi/2\)</span>.) The same vector can be represented by a linear combination of these two vectors, with coefficients <span class="math inline">\(1.5\)</span> and <span class="math inline">\(-0.5\)</span>: <span class="math inline">\(\vec r = 1.5\times (1,1) - 0.5 \times (-1,1)\)</span>. If we call the first basis <span class="math inline">\(C\)</span> for canonical and the second basis <span class="math inline">\(D\)</span> for different, we can write the same vector using different sets of coordinates for each basis:</p>
+<p><span class="math display">\[
+\vec r_{C} = (2,1); \; \vec r_D = (1.5, -0.5)
+\]</span></p>
+</section>
+<section id="projections-and-changes-of-basis" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="projections-and-changes-of-basis"><span class="header-section-number">1.2.2</span> Projections and changes of basis</h3>
+<p>The representation of an arbitrary vector (point) in a vector space as a linear combination of a given basis set is called the <em>decomposition</em> of the point in terms of the basis, which gives the coordinates for the vector in terms of each basis vector. The decomposition of a point in terms of a particular basis is very useful in high-dimensional spaces, where a clever choice of a basis can allow a description of a set of points (such as a data set) in terms of contributions of only a few basis vectors, if the data set primarily extends only in a few dimensions.</p>
+<p>To obtain the coefficients of the basis vectors in a decomposition of a vector <span class="math inline">\(\vec r\)</span>, we need to perform what is termed a <em>projection</em> of the vector onto the basis vectors. Think of shining a light perpendicular to the basis vector, and measuring the length of the shadow cast by the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v_i\)</span>. If the vectors are parallel, the shadow is equal to the length of <span class="math inline">\(\vec r\)</span>; if they are orthogonal, the shadow is nonexistent. To find the length of the shadow, use the inner product of <span class="math inline">\(\vec r\)</span> and <span class="math inline">\(\vec v\)</span>, which as you recall corresponds to the cosine of the angle between the two vectors multiplied by their norms: $r, v=rv() $. We do not care about the length of the vector <span class="math inline">\(\vec v\)</span> we are projecting onto, thus we divide the inner product by the square norm of <span class="math inline">\(\vec v\)</span>, and then multiply the vector <span class="math inline">\(\vec v\)</span> by this projection coefficient:</p>
+<p><span class="math display">\[
+Proj(\vec r ; \vec v) = \frac{ \langle \vec r , \vec v \rangle  } {\langle \vec v , \vec v \rangle } \vec v = \frac{ \langle \vec r ,  \vec v \rangle  } {\vert \vec v \vert^2} \vec v= \frac{  \vert\vec r\vert \cos(\theta) } {\vert \vec v \vert}\vec v
+\]</span></p>
+<p>This formula gives the projection of the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v\)</span>, the result is a new vector in the direction of <span class="math inline">\(\vec v\)</span>, with the scalar coefficient <span class="math inline">\(a = \ \langle \vec r , \vec v \rangle /\vert \vec v \vert^2\)</span>.</p>
+<p><strong>Example:</strong> Here is how one might calculate the projection of the point <span class="math inline">\((2,1)\)</span> onto the basis set <span class="math inline">\(\{(1,1); (-1,1)\}\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ProjMat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">cbind</span>(v1, v2), </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">byrow =</span> T, <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ProjMat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    1    1
+[2,]   -1    1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ProjMat <span class="sc">%*%</span> u</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    3
+[2,]   -1</code></pre>
+</div>
+</div>
+<p>This is not quite right: the projection coefficients are off by a factor of two compared to the correct values in the example above. This is because we have neglected to <em>normalize</em> the basis vectors, so we should modify the script as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> v1 <span class="sc">/</span> (<span class="fu">sum</span>(v1<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> v2 <span class="sc">/</span> (<span class="fu">sum</span>(v2<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>ProjMat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">cbind</span>(v1, v2), </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">byrow =</span> T, <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ProjMat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]  0.5  0.5
+[2,] -0.5  0.5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ProjMat <span class="sc">%*%</span> u)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]  1.5
+[2,] -0.5</code></pre>
+</div>
+</div>
+<p>This is an example of how to convert a vector/point from representation in one basis set to another. The new basis vectors, expressed in the original basis set, are arranged in a matrix by row, scaled by their norm squared, and multiplied by the vector that one wants to express in the new basis. The resulting vector contains the coordinates in the new basis.</p>
+</section>
+</section>
+<section id="pca-algorithm" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="pca-algorithm"><span class="header-section-number">1.3</span> PCA algorithm</h2>
 <p>We start with a data set <span class="math inline">\(X\)</span> in the form of a <span class="math inline">\(m\)</span> by <span class="math inline">\(n\)</span> matrix. The first step is to decide which are the variables and which are the observations. For example, in the case of the microarray experiment, it usually makes sense to consider different genes the variables, and to use principal components to see which genes tend to be expressed together with others.</p>
 <p>The second step is to compute the variance-covariance matrix of the <span class="math inline">\(N\)</span> variables.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
@@ -196,16 +434,16 @@ PCA algorithm
 </div>
 </div>
 </section>
-<section id="optimization-by-explained-variance" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="optimization-by-explained-variance"><span class="header-section-number">1.3</span> Optimization by explained variance</h2>
+<section id="optimization-by-explained-variance" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="optimization-by-explained-variance"><span class="header-section-number">1.4</span> Optimization by explained variance</h2>
 <p>The reason that we order the PCs by their eigenvalues is that they measure the amount of variance captured by each principal component. In that, they are equivalent to the coefficient of determination <span class="math inline">\(r^2\)</span> in linear regression. The sum of all the eigenvalues is equal to the total variance of all the variables:</p>
 <p><span class="math display">\[ \sum_i \lambda_i = \sum Var(X_i)\]</span></p>
 <p>and the fraction of variance captured by the a principal component is:</p>
 <p><span class="math display">\[ Var(PC_i) = \frac{\lambda_i}{\sum_i \lambda_i}\]</span></p>
 <p>The theory behind this rests on some relatively sophisticated linear algebra, in particular what is called the singular value decomposition (SVD) and the Eckart-Young Mirsky theorem. Here is a nice video by Gilbert Strang that explains this:<a href="https://www.youtube.com/watch?v=Y4f7K9XF04k">Strang lecture</a></p>
 </section>
-<section id="dimensionality-reduction" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="dimensionality-reduction"><span class="header-section-number">1.4</span> Dimensionality reduction</h2>
+<section id="dimensionality-reduction" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="dimensionality-reduction"><span class="header-section-number">1.5</span> Dimensionality reduction</h2>
 <p>After sorting the principal components and selecting <span class="math inline">\(k\)</span> largest eigenvalues, we are ready to simplify the data. This means that we can express a data set of <span class="math inline">\(n\)</span> variables in terms of the coordinate set of <span class="math inline">\(k\)</span> principal components. In order to express the data set in this new system of coordinates, we compute the projection coefficients for each measurement onto a give principal component. Suppose that <span class="math inline">\(Y\)</span> is a set of measurements of <span class="math inline">\(N\)</span> variables (e.g.&nbsp;genes) and <span class="math inline">\(P_i\)</span> is the <span class="math inline">\(i\)</span>-the principal component. Then the projection coefficient of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(P_i\)</span> is the dot product of the two vectors (both of length <span class="math inline">\(N\)</span>) divided by the squared norm (length) of the PC:</p>
 <p><span class="math display">\[ c_i = \frac{\langle Y, P_i\rangle}{|| P_i ||^2} \]</span></p>
 <p>If the eigenvectors are normalized prior to the computation (as they are by most computational packages), then the projection coefficient is just the dot product. Then the coefficients can be obtained for all of the measurements in the data set <span class="math inline">\(X\)</span> (<span class="math inline">\(m\)</span> by <span class="math inline">\(n\)</span>) by multiplying it by the matrix <span class="math inline">\(P\)</span> containing the first <span class="math inline">\(k\)</span> eigenvectors (principal components), which has <span class="math inline">\(n\)</span> rows and <span class="math inline">\(k\)</span> columns. The result is an <span class="math inline">\(m\)</span> by <span class="math inline">\(k\)</span> matrix <span class="math inline">\(C\)</span> containing <span class="math inline">\(k\)</span> coefficients for each of the <span class="math inline">\(m\)</span> measurements:</p>
