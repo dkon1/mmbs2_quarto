@@ -29,10 +29,10 @@ Here we have two types of objects: vectors and transformations/operators that ac
 
 **Example:** Let us multiply the following matrix and vector (specially chosen to make a point):
 
-```{python, echo=FALSE}
+```{python, "echo=FALSE"}
 import numpy as np #package for work with arrays and matrices
 import matplotlib.pyplot as plt #package with plotting capabilities
-#import seaborn as sns; sns.set() # colors for visualization
+import seaborn as sns; sns.set() # colors for visualization
 ```
 
 ```{python}
