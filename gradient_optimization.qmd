@@ -250,7 +250,7 @@ The Levenberg-Marquardt method is a combination of the gradient descent and Newt
 
 3. Update the point using $\vec x_{i+1} = \vec x_i - \left(H(\vec x_i) + \lambda diag[H(\vec x_i) ] \right)^{-1} \nabla f(\vec x_i)$
 
-4. If $f(\vec x_{i+1}) < f(\vec x_i) $ (the new point is an improvement), accept $\vec x_{i+1}$ and divide $\lambda$ by a factor $S$ (which can be set to be any positive real number, usually in the range of 2-10)
+4. If $f(\vec x_{i+1}) < f(\vec x_i)$ (the new point is an improvement), accept $\vec x_{i+1}$ and divide $\lambda$ by a factor $S$ (which can be set to be any positive real number, usually in the range of 2-10)
 
 5. else (if the point is not an improvement) keep $\vec x_i$ as the current point  and multiply $\lambda$ by $S$
 
