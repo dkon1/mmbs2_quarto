@@ -9,6 +9,7 @@ book:
   chapters:
     - index.qmd
     - PCA.qmd
+    - gradient_optimization.qmd
     - references.qmd
 
 bibliography: references.bib

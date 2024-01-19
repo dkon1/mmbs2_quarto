@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Mathematical Methods for Biology, Part 2 - 2&nbsp; Optimization using gradients</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./PCA.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Mathematical Methods for Biology, Part 2</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">2.1</span>  Overview</a></li>
+  <li><a href="#optimization-with-one-variable" id="toc-optimization-with-one-variable" class="nav-link" data-scroll-target="#optimization-with-one-variable"><span class="toc-section-number">2.2</span>  Optimization with one variable</a>
+  <ul class="collapse">
+  <li><a href="#golden-section-search" id="toc-golden-section-search" class="nav-link" data-scroll-target="#golden-section-search"><span class="toc-section-number">2.2.1</span>  golden section search</a></li>
+  <li><a href="#bisection-method" id="toc-bisection-method" class="nav-link" data-scroll-target="#bisection-method"><span class="toc-section-number">2.2.2</span>  bisection method</a></li>
+  <li><a href="#secant-method" id="toc-secant-method" class="nav-link" data-scroll-target="#secant-method"><span class="toc-section-number">2.2.3</span>  secant method</a></li>
+  <li><a href="#newton-raphson-method" id="toc-newton-raphson-method" class="nav-link" data-scroll-target="#newton-raphson-method"><span class="toc-section-number">2.2.4</span>  Newton-Raphson method</a></li>
+  </ul></li>
+  <li><a href="#optimization-of-multivariable-functions-using-derivatives" id="toc-optimization-of-multivariable-functions-using-derivatives" class="nav-link" data-scroll-target="#optimization-of-multivariable-functions-using-derivatives"><span class="toc-section-number">2.3</span>  Optimization of multivariable functions using derivatives</a>
+  <ul class="collapse">
+  <li><a href="#multivariable-optimization-problem" id="toc-multivariable-optimization-problem" class="nav-link" data-scroll-target="#multivariable-optimization-problem"><span class="toc-section-number">2.3.1</span>  multivariable optimization problem</a></li>
+  <li><a href="#gradient-and-contours" id="toc-gradient-and-contours" class="nav-link" data-scroll-target="#gradient-and-contours"><span class="toc-section-number">2.3.2</span>  gradient and contours</a></li>
+  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="toc-section-number">2.3.3</span>  gradient descent</a></li>
+  <li><a href="#newton-raphson-method-1" id="toc-newton-raphson-method-1" class="nav-link" data-scroll-target="#newton-raphson-method-1"><span class="toc-section-number">2.3.4</span>  Newton-Raphson method</a></li>
+  <li><a href="#levenberg-marquardt-method" id="toc-levenberg-marquardt-method" class="nav-link" data-scroll-target="#levenberg-marquardt-method"><span class="toc-section-number">2.3.5</span>  Levenberg-Marquardt method</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">2.1</span> Overview</h2>
+<p>One often has to find the maximum or minimum of a function that describes an important biological property. Examples include:</p>
+<ul>
+<li><p>Free energy of a protein as function of its conformation (the folding problem)</p></li>
+<li><p>Evolutionary fitness as a function of the genome</p></li>
+<li><p>Optimizing the dose of therapeutic radiation or chemotherapy, to affect the maximal fraction of tumor cells and the minimal number of healthy cells</p></li>
+</ul>
+<p>In all these cases, there is the same fundamental problem: given a complex function of many variables, find the values of the variables which optimize the function, that is, for which it attains its maximum or minimum, depending on the question.</p>
+<p>Some terminology: <span class="math inline">\(f\)</span> is known as the <em>objective function</em>, and the quantities the function depends on (<span class="math inline">\(x_1, x_2, ..., x_n\)</span>) are the governing variables.</p>
+<p>It is important to note the notion of a minimum or a maximum is local: it is a point which is lowest or highest in some neighborhood. But very often we are interested in a global optimum - the best possible solution to our problem. The first problem is not too difficult, while the second is practically impossible for a complex function, because, aside from the areas explored by minimization, there is no way to guarantee that there is no better optimum elsewhere. This is the tragic state of optimizers everywhere - they have to live with the uncertainty.</p>
+</section>
+<section id="optimization-with-one-variable" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="optimization-with-one-variable"><span class="header-section-number">2.2</span> Optimization with one variable</h2>
+<section id="golden-section-search" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="golden-section-search"><span class="header-section-number">2.2.1</span> golden section search</h3>
+<p>Let us first consider searching for the minimum (or maximum, the problems are really the same except for a minus sign) of a function of one variable <span class="math inline">\(f(x)\)</span>. The goal is to locate the minimum value of the function within a certain interval on the <span class="math inline">\(x\)</span>-axis, to a desired tolerance. We assume only that we can evaluate the function at any given value of <span class="math inline">\(x\)</span>. Here is the outline of the algorithm:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Golden section search
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>start with three points <span class="math inline">\(x_1,x_2,x_3\)</span> <span class="math inline">\((x_1&lt;x_2&lt;x_3)\)</span>, such that <span class="math inline">\(f(x_2) &lt; f(x_1)\)</span> and <span class="math inline">\(f(x_2) &lt; f(x_3)\)</span></li>
+<li>choose a point <span class="math inline">\(x_4\)</span> in the larger of the intervals <span class="math inline">\((x_1,x_2)\)</span> or <span class="math inline">\((x_2,x_3)\)</span> (let’s assume it’s <span class="math inline">\((x_1,x_2)\)</span>, the process is the same for the other case)</li>
+<li>if <span class="math inline">\(f(x_4) &gt; f(x_2)\)</span>, replace <span class="math inline">\(x_1\)</span> with <span class="math inline">\(x_4\)</span>, the new triplet is <span class="math inline">\((x_4, x_2, x_3)\)</span></li>
+<li>if <span class="math inline">\(f(x_4) &lt; f(x_2)\)</span>, replace <span class="math inline">\(x_3\)</span> with <span class="math inline">\(x_2\)</span>, the new triplet is <span class="math inline">\((x_1, x_4, x_2)\)</span></li>
+<li>repeat until the width of the interval is smaller than your tolerance</li>
+</ol>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/golden_search.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Golden ratio method for a 1-variable function f(x); <a href="https://en.wikipedia.org/wiki/Golden-section_search#/media/File:GoldenSectionSearch.png">Figure source</a></figcaption><p></p>
+</figure>
+</div>
+<p>The question is, what is the optimal way to pick the new point <span class="math inline">\(x_4\)</span>? Since we have no information about the shape of the function <span class="math inline">\(f(x)\)</span>, we don’t know where the minimum is more likely to be hiding. The best approach is to hedge your bets and make each option (3 or 4) result in the same interval scaled by the same factor.</p>
+<p>Assume that we pick <span class="math inline">\(x_4\)</span> in <span class="math inline">\((x_1, x_2)\)</span>, as the larger interval, and we want to pick <span class="math inline">\(x_4\)</span> so that the length is reduced by the same factor in both cases: <span class="math inline">\((x_4, x_2, x_3)\)</span> and <span class="math inline">\((x_1, x_4, x_2)\)</span> and the resulting triplet is also divided in the same proportion. This is the condition for the golden ratio (that the ratio of the larger segment to the whole is the same as the ratio of the smaller segment to the larger). Thus, the the choice for the new point is <span class="math inline">\(x_4 = x_1 + (x_3 - x_1)/\phi\)</span>, where <span class="math inline">\(\phi = (1 + √5)/2\)</span>. Similarly, if the interval <span class="math inline">\((x_2,x_3)\)</span> is larger, we pick <span class="math inline">\(x_4 = x_3 - (x_3 - x_1)/\phi\)</span>.</p>
+<p>Notice that this means that the interval bracketing the minimum shrinks by a factor of <span class="math inline">\(\phi \approx 1.61\)</span> every step.</p>
+</section>
+<section id="bisection-method" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="bisection-method"><span class="header-section-number">2.2.2</span> bisection method</h3>
+<p>The bisection method is applicable for a continuous function <span class="math inline">\(f(x)\)</span> which has a computable derivative function <span class="math inline">\(F(x)\)</span>. In that case, finding a maximum or minimum of f(x) is the same as finding a root of the derivative function F(x). The bisection method simply divides the bracketing interval that contains the maximum or minimum into two, like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/Bisection_method.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Bisection method involves cutting the interval bracketing a zero in two; <a href="https://en.wikipedia.org/wiki/Bisection_method#/media/File:Bisection_method.svg">Figure source</a></figcaption><p></p>
+</figure>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Golden section search
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>start with an interval <span class="math inline">\((a,b)\)</span> with <span class="math inline">\(F(a)\)</span> and <span class="math inline">\(F(b)\)</span> of opposite signs</li>
+<li>choose <span class="math inline">\(c = (b-a)/2\)</span></li>
+<li>pick the side on which the two endpoints are bracketing zero, so the new interval is either <span class="math inline">\((a,c)\)</span> or <span class="math inline">\((c,b)\)</span></li>
+<li>repeat until the interval width is smaller than the tolerance</li>
+</ol>
+</div>
+</div>
+<p>In this case, the bracketing interval is always decreased by a factor of two, which is faster than the golden section search.</p>
+</section>
+<section id="secant-method" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="secant-method"><span class="header-section-number">2.2.3</span> secant method</h3>
+<p>Secant method is also a root-finding method, and can thus be used to find optima of functions with a computable derivative. If the derivative function is f(x), then the algorithm is:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Secant algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>start with a bracketing interval <span class="math inline">\((x_0, x_1)\)</span></li>
+<li>calculate the slope of the (secant) line that connects the two points <span class="math inline">\(a = \frac{f(x_1) - f(x_0)}{x_1 - x_0}\)</span></li>
+<li>pick the next value <span class="math inline">\(x_i = x_{i-1} - af(x_{i-1})\)</span>, which is where the secant line crosses 0</li>
+<li>repeat until <span class="math inline">\(f(x_i)\)</span> is close enough to zero</li>
+</ol>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/Secant_method.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The secant method uses the line connecting the two bracketing points to approximate the root; <a href="https://commons.wikimedia.org/w/index.php?curid=877497">Figure source</a></figcaption><p></p>
+</figure>
+</div>
+<p>The secant method is faster to converge than bisection for most functions.</p>
+</section>
+<section id="newton-raphson-method" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="newton-raphson-method"><span class="header-section-number">2.2.4</span> Newton-Raphson method</h3>
+<p>We will now consider an old method for finding roots of functions, devised by the Great Newton Himself, is also useful for finding maxima and minima of functions for which an exact formula is given. To use for optimization, it requires not only the knowledge of the derivative function <span class="math inline">\(f(x)\)</span> (as for secant and bisection method) but also the knowledge of the second derivative function <span class="math inline">\(f'(x)\)</span> of the function we want to optimize.</p>
+<p>The idea is based on the first-order Taylor expansion of a function near a point <span class="math inline">\(x_0\)</span>: <span class="math inline">\(f(x_0 + \Delta x) = f(x_0) + \Delta x f'(x_0) + ...\)</span>. The dots indicate higher-order terms that we will ignore, for sufficiently small <span class="math inline">\(\Delta x\)</span>. Now, suppose the function has a root (zero) at <span class="math inline">\(x_0\)</span>, so <span class="math inline">\(f(x_0) = 0\)</span>. Then, if we are at a point near the root, <span class="math inline">\(x_0 + \Delta x\)</span>, we can calculate how far away it is from the root, by simply solving for <span class="math inline">\(\Delta x = f(x_0 + \Delta x) / f'(x_0)\)</span>. The idea of Newton’s method is to find the step size needed to reach the root, by using the value of the derivative at the current point <span class="math inline">\(x_0 + \Delta x\)</span> (assuming the points are close enough that the slopes are almost equal). Then the steps for the algorithm are:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Newton-Raphson algorithm in 1 dimension
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Start at some point <span class="math inline">\(x_0\)</span> (not the root, as above)</p></li>
+<li><p>Let <span class="math inline">\(x_{i+1} = x_i - f(x_i)/f'(x_i)\)</span></p></li>
+<li><p>Repeat, until <span class="math inline">\(|x_{i+1} - x_i|&lt; \epsilon_{tol}\)</span>, where <span class="math inline">\(\epsilon_{tol}\)</span> is the specified tolerance</p></li>
+</ol>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/Newton_iteration.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Newton-Raphson method for finding roots uses the derivative of the function to find the intersection of the tangent line with the x-axis; <a href="https://commons.wikimedia.org/wiki/File:Newton_iteration.svg">Figure source</a></figcaption><p></p>
+</figure>
+</div>
+<p>The method turns out to be very efficient. Its only limitation is that it cannot find a root for which the derivative is zero (graphically, a root at which the graph of the function only touches the <span class="math inline">\(x\)</span>-axis). Another complication is that, if the starting point is not close enough to a root, it can be hard to predict which root the method will find, but once it settles in near one, it will reach it quickly. If the value of the derivative <span class="math inline">\(f'(x_i)\)</span> is small, then the method can bounce around, sometimes almost chaotically, so its efficiency strongly depends on starting in proximity to a root.</p>
+<p>To be used for optimization of a function <span class="math inline">\(F(x)\)</span>, we need to be able to calculate <span class="math inline">\(F'(x) = f(x)\)</span> and <span class="math inline">\(F''(x) = f'(x)\)</span> and the find the root(s) of <span class="math inline">\(f(x)\)</span>. Then one has to check whether the extremum is a max or a min, which is straightforward.</p>
+</section>
+</section>
+<section id="optimization-of-multivariable-functions-using-derivatives" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="optimization-of-multivariable-functions-using-derivatives"><span class="header-section-number">2.3</span> Optimization of multivariable functions using derivatives</h2>
+<p>Let us now consider functions of multiple variables, which is the case for most real applications. Such, a function, e.g.&nbsp;<span class="math inline">\(f(x,y)\)</span>, takes in values of the variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, and returns a single number. Graphically, this could be plotted as a surface, with the height at any pair of coordinates <span class="math inline">\((x,y)\)</span> given by <span class="math inline">\(f(x,y)\)</span>. Intuitively, the goal of optimization is to find the lowest (or highest) point on the surface, at least in a neighborhood (see above discussion about difficulties of global optimization). Let us assume that we are searching for a minimum, as the story is completely equivalent for maximization.</p>
+<section id="multivariable-optimization-problem" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="multivariable-optimization-problem"><span class="header-section-number">2.3.1</span> multivariable optimization problem</h3>
+<p>A function of more than one variable is denoted by <span class="math inline">\(f(\vec x)\)</span>, where <span class="math inline">\(\vec x\)</span> is a vector of <span class="math inline">\(n\)</span> variables <span class="math inline">\(x_1, x_2, ..., x_n\)</span>. This means the function takes in a vector of several numbers and returns a scalar - a single number. One simple visual analogy is the function that gives elevation (height) for a given latitude and longitude <span class="math inline">\((x,y)\)</span>. By plotting that function we would produce the shape of a mountain range or any other terrain, with the appropriate height at each point in the <span class="math inline">\(x-y\)</span> plane.</p>
+<p>The basic condition for finding the maximum or minimum of a function is known from basic calculus. For a function of <span class="math inline">\(n\)</span> variables <span class="math inline">\(f(x_1, x_2, ..., x_n)\)</span> to be at an optimum, all partial derivatives must vanish:</p>
+<p><span class="math display">\[ \frac{\partial f(x_1, x_2, ..., x_n)}{\partial x_1} = \frac{\partial f(x_1, x_2, ..., x_n)}{\partial x_2} = ... = \frac{\partial f(x_1, x_2, ..., x_n)}{\partial x_n} = 0 \]</span></p>
+<p>This gives a set of <span class="math inline">\(n\)</span> equations to be solved for <span class="math inline">\(n\)</span> unknowns. However, in practice optimization problems are rarely solved this way, because solving <span class="math inline">\(n\)</span> nonlinear equations can be difficult, particularly for complicated functions that frequently arise in biology. However, one can use iterative methods to converge to the optimum using derivatives of the objective function.</p>
+</section>
+<section id="gradient-and-contours" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="gradient-and-contours"><span class="header-section-number">2.3.2</span> gradient and contours</h3>
+<p>In order to describe the changes in multivariable functions, we need more than one number. Consider the slope on the surface of a mountain: it may be steep in one direction, and flat in another. In order to deal with this, <em>partial derivatives</em> are used. These represent the rate of change of <span class="math inline">\(f\)</span> with respect to <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> separately. Geometrically, this means the slope of the landscape we visualized above, if sliced in the <span class="math inline">\(x\)</span> or <span class="math inline">\(y\)</span> direction.</p>
+<p><strong>Example:</strong> If <span class="math inline">\(f(x,y) = x^2-2x+y^2+4x+5\)</span></p>
+<p><span class="math display">\[
+\frac{\partial f}{\partial x} = 2x -2 \\
+\frac{\partial f}{\partial y} = 2y +4
+\]</span></p>
+<p>This allows us to define the multi-dimensional equivalent of the derivative: the <em>gradient</em> of a function,</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>gradient</em> of a function <span class="math inline">\(f(\vec x)\)</span> of multiple variables <span class="math inline">\(\vec x = x_1, .., x_n\)</span> is a vector with <span class="math inline">\(n\)</span> components, each one the partial derivative with respect to the corresponding variable:</p>
+<p><span class="math display">\[ \nabla f (\vec x) = (\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, ..., \frac{\partial f}{\partial x_n}) \]</span></p>
+</div>
+</div>
+<p>To gain some geometric intuition about gradients, let us introduce the notion of contours of <span class="math inline">\(f(\vec x)\)</span></p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>countours</em> or <em>level curves</em> of a function <span class="math inline">\(f(\vec x)\)</span> of multiple variables <span class="math inline">\(\vec x = x_1, .., x_n\)</span> are sets of values of <span class="math inline">\(\vec x\)</span> that satisfy equations, for any given constant c:</p>
+<p><span class="math display">\[ f (\vec x) = c \]</span></p>
+</div>
+</div>
+<p>These are curves (for two-variable functions) or surfaces (for three-variable functions) in the space of the variables on which the function is equal to a particular constant. One common example of this are contours of a landscape (e.g.&nbsp;on the Earth’s surface) on a topographical map.</p>
+<p>There is an important relationship between gradients and contours. Since there there is no change in <span class="math inline">\(f\)</span> as one travels along it, the derivative of the function in the direction of the contour curve at any point is 0. As a consequence, the direction of the fastest change of <span class="math inline">\(f\)</span> at any point, <span class="math inline">\(\nabla f\)</span> is orthogonal to the level curve at that point.</p>
+<p><strong>Example:</strong> Let us find the contours (level curves) for the function we gave above, which means the solution of the equation <span class="math inline">\(f(x,y) = (x-1)^2+(y+2)^2 = c\)</span>. These are circles centered at <span class="math inline">\((1,-2)\)</span>, with the radius depending on the value of <span class="math inline">\(c\)</span>.</p>
+<p>Let us compare the direction of the gradient at a point, let us say at <span class="math inline">\((0,-2)\)</span>. This point is horizontally to the left of the center of the circular level curves. Thus, the tangent line to the circle at the point is vertical. The gradient is <span class="math inline">\(\nabla f = (-2,0)\)</span>: a vertical vector, perpendicular to the direction of the circle at that point.</p>
+</section>
+<section id="gradient-descent" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">2.3.3</span> gradient descent</h3>
+<p>The simplest idea for finding the lowest point in a valley is to follow the slope downward. In multiple dimensions, the direction of greatest downward change (steepest descent) is given by the gradient, which leads to the <em>gradient descent</em> algorithm.</p>
+<p>The first method for minimization of a multidimensional function simply takes steps in the direction of the gradient, until the point is sufficiently close to the bottom of the valley. This is called the method of <em>gradient descent</em>:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Gradient descent algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Start at some point <span class="math inline">\(\vec x_0\)</span>.</p></li>
+<li><p>Compute the gradient at the current point <span class="math inline">\(\vec x_i\)</span>, <span class="math inline">\(\nabla f (\vec x_i)\)</span>. Find the minimum of the function <span class="math inline">\(f\)</span> along that direction, which may be done through a one-dimensional search.</p></li>
+<li><p>Take the next point to be <span class="math inline">\(x_{i+1} = x_i + \alpha \nabla f (\vec x_i)\)</span>, where <span class="math inline">\(\alpha\)</span> is the multiple found by the one-dimensional search.</p></li>
+<li><p>Repeat until <span class="math inline">\(|| \vec x_{i+1} - \vec x_i || &lt; \epsilon_{tol}\)</span>, where <span class="math inline">\(\epsilon_{tol}\)</span> is the specified tolerance</p></li>
+</ol>
+</div>
+</div>
+<p>The gradient descent method, although intuitively simple, is in practice inefficient. Specifically, it has difficulties with descending into a long, narrow valley: it takes many short, zigzagging steps on the way to the lowest point. Relying on the steepest way down is not the fastest way of reaching the minimum, although it is guaranteed to converge eventually, if it takes small steps.</p>
+</section>
+<section id="newton-raphson-method-1" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="newton-raphson-method-1"><span class="header-section-number">2.3.4</span> Newton-Raphson method</h3>
+<p>A different approach at finding the minimum of a multi-variable function is to extend the Newton-Raphson method from one variable to multiple. The idea is once again to convert the optimization problem for <span class="math inline">\(f(\vec x)\)</span> into a root-finding problem for <span class="math inline">\(\nabla f (\vec x)\)</span> where the gradient function plays the role of the derivative in the 1-dimensional Newton’s method. In order for this to work, we need an equivalent to the second derivative as well.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a function <span class="math inline">\(f(\vec x)\)</span> of a vector variable <span class="math inline">\(\vec x\)</span> with <span class="math inline">\(n\)</span> components, the <em>Hessian</em> is a <span class="math inline">\(n\)</span> by <span class="math inline">\(n\)</span> matrix, with each element defined as the second partial with respect to two variables:</p>
+<p><span class="math display">\[
+H_{i,j} = \frac{\partial^2 f}{\partial x_i \partial x_j}
+\]</span></p>
+</div>
+</div>
+<p><strong>Example:</strong> For the same function we saw <span class="math inline">\(f(x,y) = x^2-2x+y^2+4x+5\)</span>, with the gradient:</p>
+<p><span class="math display">\[
+\frac{\partial f}{\partial x} = 2x -2 \\
+\frac{\partial f}{\partial y} = 2y +4
+\]</span></p>
+<p>The Hessian requires computing two more partials for each of the elements of the gradient:</p>
+<p><span class="math display">\[
+\frac{\partial^2 f}{\partial x^2} = 2 \\
+\frac{\partial^2 f}{\partial x \partial y} = 0 \\
+\frac{\partial^2 f}{\partial y \partial x} = 0 \\
+\frac{\partial^2 f}{\partial y^2} = 2
+\]</span></p>
+<p>So the Hessian matrix is</p>
+<p><span class="math display">\[
+H(f(\vec x)) = \begin{pmatrix} 2 &amp; 0 \\ 0 &amp; 2 \end{pmatrix}
+\]</span></p>
+<p>Now that we have the multi-variable equivalents of <span class="math inline">\(f'(x)\)</span> and <span class="math inline">\(f''(x)\)</span>, we can formulate the multidimensional Newton-Raphson algorithm using vectors and matrices:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Multi-variable Newton-Raphson algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Define the gradient function <span class="math inline">\(\nabla f (\vec x)\)</span> and the Hessian function <span class="math inline">\(H(\vec x)\)</span></p></li>
+<li><p>Start at some point <span class="math inline">\(\vec x_0\)</span> (as long as it is not the minimum)</p></li>
+<li><p>Update the point using<span class="math inline">\(\vec x_{i+1} = \vec x_i - H^{-1}(\vec x_i) \nabla f(\vec x_i)\)</span></p></li>
+<li><p>Repeat until <span class="math inline">\(|| \vec x_{i+1} - \vec x_i || &lt; \epsilon_{tol}\)</span>, where <span class="math inline">\(\epsilon_{tol}\)</span> is the specified tolerance</p></li>
+</ol>
+</div>
+</div>
+<p>The geometric intuition of the Newton-Raphson method relies on the fact that the second derivative (Hessian) matrix <span class="math inline">\(H\)</span> represents the curvature of the objective function, similar to the coefficient <span class="math inline">\(a\)</span> of the 1-variable quadratic function <span class="math inline">\(ax^2 + bx + c\)</span>. Instead of simply using the gradient, or the linear component of the objective function, this method uses the curvature to speed up the search. In fact, Newton-Raphson performs very efficiently once it is within a nearly quadratic-shaped well, but doesn’t do very well far from the minimum.</p>
+</section>
+<section id="levenberg-marquardt-method" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="levenberg-marquardt-method"><span class="header-section-number">2.3.5</span> Levenberg-Marquardt method</h3>
+<p>The Levenberg-Marquardt method is a combination of the gradient descent and Newton-Raphson methods. It uses their respective strengths, by using the gradient to quickly reach the vicinity (approximately quadratic valley) of a minimum, and then use the curvature information from the Hessian to finish the job efficiently. The insight of this method is that one can interpolate between the two methods by introducing a parameter <span class="math inline">\(\lambda\)</span> which at high values weigh the method toward gradient descent, and at small values the Hessian and therefore Newton’s method dominates. Here is an outline of the algorithm, which starts with a large value of <span class="math inline">\(\lambda\)</span>, assuming that the initial guess <span class="math inline">\(\vec x_0\)</span> is far from the minimum:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Levenberg-Marquardt algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Define the gradient function <span class="math inline">\(\nabla f (\vec x)\)</span> and the Hessian function <span class="math inline">\(H(\vec x)\)</span></p></li>
+<li><p>Start at some point <span class="math inline">\(\vec x_0\)</span> (as long as it is not the minimum) and set <span class="math inline">\(\lambda\)</span> to be large (e.g.&nbsp;1000)</p></li>
+<li><p>Update the point using <span class="math inline">\(\vec x_{i+1} = \vec x_i - \left(H(\vec x_i) + \lambda diag[H(\vec x_i) ] \right)^{-1} \nabla f(\vec x_i)\)</span></p></li>
+<li><p>If $f(x_{i+1}) &lt; f(x_i) $ (the new point is an improvement), accept <span class="math inline">\(\vec x_{i+1}\)</span> and divide <span class="math inline">\(\lambda\)</span> by a factor <span class="math inline">\(S\)</span> (which can be set to be any positive real number, usually in the range of 2-10)</p></li>
+<li><p>else (if the point is not an improvement) keep <span class="math inline">\(\vec x_i\)</span> as the current point and multiply <span class="math inline">\(\lambda\)</span> by <span class="math inline">\(S\)</span></p></li>
+<li><p>Repeat until <span class="math inline">\(|| \vec x_{i+1} - \vec x_i || &lt; \epsilon_{tol}\)</span>, where <span class="math inline">\(\epsilon_{tol}\)</span> is the specified tolerance</p></li>
+</ol>
+</div>
+</div>
+<p>When <span class="math inline">\(\lambda=0\)</span>, the updating expression is identical to the Newton-Raphson step. One unusual insight in the method is the use of the diagonal of the Hessian instead of just the identity matrix, which is in line with the gradient descent updating step. It turns out that using the diagonal of the Hessian matrix (which contains the second derivatives w.r.t. to all the variables) guarantees more efficient convergence than using just the identity matrix by using the geometry of the curvature to scale the gradient accordingly. This method is widely used in nonlinear least squares fitting problems, such as fitting data to exponential or other complex functions.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./PCA.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
