@@ -10,6 +10,7 @@ book:
     - index.qmd
     - PCA.qmd
     - gradient_optimization.qmd
+    - fourier_convolution.qmd
     - references.qmd
 
 bibliography: references.bib

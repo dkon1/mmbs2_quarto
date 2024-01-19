@@ -25,7 +25,7 @@ A *linear transformation* or *linear operator* is a mapping $L$ between two sets
   2. *(additive)* $L(\vec v_1 + \vec v_2) =  L(\vec v_1) + L(\vec v_2)$; where $\vec v_1$ and $\vec v_2$ are vectors.
 :::
 
-Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are  vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector $\vec v$ into another one: $ A  \times  \vec v = \vec u$. 
+Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are  vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector $\vec v$ into another one: $A \times \vec v = \vec u$. 
 
 **Example:** Let us multiply the following matrix and vector (specially chosen to make a point):
 
@@ -58,7 +58,9 @@ The notion of linearity leads to the important idea of combining different vecto
 ::: callout-note
 ## Definition
 A *linear combination* of $n$ vectors $\{ \vec v_i \}$ is a weighted sum of these vectors with any real numbers $\{a_i\}$:
-$$ a_1 \vec v_1+ a_2 \vec v_2... + a_n \vec v_n$$
+$$ 
+a_1 \vec v_1+ a_2 \vec v_2... + a_n \vec v_n
+$$
 :::
 
 Linear combinations arise naturally from the notion of linearity, combining the additive property and the scalar multiplication property. Speaking  intuitively, a linear combination of vectors produces a new vector that is related to the original set. Linear combinations give a simple way of generating new vectors, and thus invite the following definition for a collection of vectors closed under linear combinations:
@@ -98,13 +100,13 @@ $$
 
 The representation of an arbitrary vector (point) in a vector space as a linear combination of a given basis set is called the *decomposition* of the point in terms of the basis, which gives the coordinates for the vector in terms of each basis vector. The decomposition of a point in terms of a particular basis is very useful in high-dimensional spaces, where a clever choice of a basis can allow a description of a set of points (such as a data set) in terms of contributions of only a few basis vectors, if the data set primarily extends only in a few dimensions.
 
-To obtain the coefficients of the basis vectors in a decomposition of a vector $\vec r$, we need to perform what is termed a *projection* of the vector  onto the basis vectors. Think of shining a light perpendicular to the basis vector, and measuring the length of the shadow cast by the vector $\vec r$  onto $\vec v_i$. If the vectors are parallel, the shadow is equal to the length of $\vec r$; if they are orthogonal, the shadow is nonexistent. To find the length of the shadow, use the inner product of $\vec r$ and $\vec v$, which as you recall corresponds to the cosine of the angle between  the two vectors multiplied by their norms: $\left\langle  \vec r, \vec v\right \rangle  =\vert\vec r\vert \vert\vec v\vert\cos(\theta) $. We do not care about the length of the vector $\vec v$ we are projecting onto, thus we divide the inner product by the square norm of $\vec v$, and then multiply the vector $\vec v$ by this projection coefficient:
+To obtain the coefficients of the basis vectors in a decomposition of a vector $\vec r$, we need to perform what is termed a *projection* of the vector  onto the basis vectors. Think of shining a light perpendicular to the basis vector, and measuring the length of the shadow cast by the vector $\vec r$  onto $\vec v_i$. If the vectors are parallel, the shadow is equal to the length of $\vec r$; if they are orthogonal, the shadow is nonexistent. To find the length of the shadow, use the inner product of $\vec r$ and $\vec v$, which as you recall corresponds to the cosine of the angle between  the two vectors multiplied by their norms: $\left \langle  \vec r, \vec v\right \rangle  =\vert\vec r\vert \vert\vec v\vert\cos(\theta)$. We do not care about the length of the vector $\vec v$ we are projecting onto, thus we divide the inner product by the square norm of $\vec v$, and then multiply the vector $\vec v$ by this projection coefficient:
 
 $$ 
 Proj(\vec r ; \vec v) = \frac{ \langle \vec r , \vec v \rangle  } {\langle \vec v , \vec v \rangle } \vec v = \frac{ \langle \vec r ,  \vec v \rangle  } {\vert \vec v \vert^2} \vec v= \frac{  \vert\vec r\vert \cos(\theta) } {\vert \vec v \vert}\vec v
 $$
 
-This formula gives the projection of the vector $\vec r$ onto $\vec v$, the result is a new vector in the direction of $\vec v$, with the scalar coefficient $a = \ \langle \vec r ,  \vec v \rangle  /\vert \vec v \vert^2$.
+This formula gives the projection of the vector $\vec r$ onto $\vec v$, the result is a new vector in the direction of $\vec v$, with the scalar coefficient $a = \langle \vec r ,\vec v \rangle  /\vert \vec v \vert^2$.
 
 **Example:** Here is how one might calculate the projection of the point $(2,1)$ onto the basis set $\{(1,1); (-1,1)\}$:
 
@@ -164,7 +166,9 @@ The third step is to diagonalize (find the eigenvalues and eigenvectors) of the 
 
 The reason that we order the PCs by their eigenvalues is that they measure the amount of variance captured by each principal component. In that, they are equivalent to the coefficient of determination $r^2$ in linear regression. The sum of all the eigenvalues is equal to the total variance of all the variables:
 
-$$ \sum_i \lambda_i = \sum Var(X_i)$$
+$$ 
+\sum_i \lambda_i = \sum Var(X_i)
+$$
 
 and the fraction of variance captured by the a principal component is:
 

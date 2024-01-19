@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Mathematical Methods for Biology, Part 2 - 3&nbsp; Fourier transforms and convolutions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./gradient_optimization.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Mathematical Methods for Biology, Part 2</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">3.1</span>  Overview</a></li>
+  <li><a href="#continuous-fourier-transform" id="toc-continuous-fourier-transform" class="nav-link" data-scroll-target="#continuous-fourier-transform"><span class="toc-section-number">3.2</span>  Continuous Fourier Transform</a>
+  <ul class="collapse">
+  <li><a href="#fourier-integral" id="toc-fourier-integral" class="nav-link" data-scroll-target="#fourier-integral"><span class="toc-section-number">3.2.1</span>  Fourier integral</a></li>
+  <li><a href="#the-delta-function" id="toc-the-delta-function" class="nav-link" data-scroll-target="#the-delta-function"><span class="toc-section-number">3.2.2</span>  the delta function</a></li>
+  <li><a href="#fourier-pairs-and-the-gaussian-function" id="toc-fourier-pairs-and-the-gaussian-function" class="nav-link" data-scroll-target="#fourier-pairs-and-the-gaussian-function"><span class="toc-section-number">3.2.3</span>  Fourier pairs and the Gaussian function</a></li>
+  </ul></li>
+  <li><a href="#convolution-and-fourier-transform" id="toc-convolution-and-fourier-transform" class="nav-link" data-scroll-target="#convolution-and-fourier-transform"><span class="toc-section-number">3.3</span>  Convolution and Fourier Transform</a>
+  <ul class="collapse">
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="toc-section-number">3.3.1</span>  Examples</a></li>
+  <li><a href="#the-convolution-theorem" id="toc-the-convolution-theorem" class="nav-link" data-scroll-target="#the-convolution-theorem"><span class="toc-section-number">3.3.2</span>  The Convolution Theorem</a></li>
+  </ul></li>
+  <li><a href="#computational-fourier-transform-in-two-dimensions-spectral-analysis" id="toc-computational-fourier-transform-in-two-dimensions-spectral-analysis" class="nav-link" data-scroll-target="#computational-fourier-transform-in-two-dimensions-spectral-analysis"><span class="toc-section-number">3.4</span>  Computational: Fourier transform in two dimensions, spectral analysis</a>
+  <ul class="collapse">
+  <li><a href="#power-spectrum-in-two-dimensions" id="toc-power-spectrum-in-two-dimensions" class="nav-link" data-scroll-target="#power-spectrum-in-two-dimensions"><span class="toc-section-number">3.4.1</span>  power spectrum in two dimensions</a></li>
+  <li><a href="#application-analysis-of-time-series-data" id="toc-application-analysis-of-time-series-data" class="nav-link" data-scroll-target="#application-analysis-of-time-series-data"><span class="toc-section-number">3.4.2</span>  Application: analysis of time series data</a></li>
+  </ul></li>
+  <li><a href="#synthesis-fourier-transform-of-crystal-diffraction-pattern" id="toc-synthesis-fourier-transform-of-crystal-diffraction-pattern" class="nav-link" data-scroll-target="#synthesis-fourier-transform-of-crystal-diffraction-pattern"><span class="toc-section-number">3.5</span>  Synthesis: Fourier transform of crystal diffraction pattern</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">3.1</span> Overview</h2>
+<p>In this chapter we will build on the concepts of Fourier analysis introduced in the last quarter. We will outline the theory of Fourier transforms and give examples of pairs of functions and their transforms. In the process, new theoretical constructs, such as the delta-function, will come into play. This will lead to the most important tool in the applications of Fourier transforms, convolution of two functions. I will give examples from imaging and crystallography, where Fourier transforms of data, described as convolutions, are indispensable.</p>
+</section>
+<section id="continuous-fourier-transform" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="continuous-fourier-transform"><span class="header-section-number">3.2</span> Continuous Fourier Transform</h2>
+<section id="fourier-integral" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="fourier-integral"><span class="header-section-number">3.2.1</span> Fourier integral</h3>
+<p>So far we have only used the idea of frequency decomposition on functions which are either periodic (repeating) with period <span class="math inline">\(L\)</span>, or equivalently, if we are only interested in the function over that interval. We may want to similarly analyze a continuous function which is not periodic, and in which we are interested over the whole real line. To achieve that, we generalize the notion of a Fourier series from a sum to an integral:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Forward Fourier transform: <span class="math display">\[
+G(f) =   \int_{-\infty}^\infty g(x) e^{i2\pi f x}dx
+\]</span></p>
+<p>Inverse Fourier transform: <span class="math display">\[
+g(x) =  \int_{-\infty }^\infty G(f) e^{-i2\pi fx}df
+\]</span></p>
+</div>
+</div>
+<p>The first equation is called the <em>Fourier transform</em>, note that it changes the variable from <span class="math inline">\(x\)</span> (e.g.&nbsp;time or space) to <span class="math inline">\(f\)</span> (frequency). It is equivalent to the integral definition of <span class="math inline">\(c_n\)</span>, except that <span class="math inline">\(n\)</span> was restricted to the integers, and <span class="math inline">\(f\)</span> can be any real number. This is why, for the second equation, defining the <em>Inverse Fourier transform</em>, the Fourier series becomes an integral: we have to add up the contributions of all real frequencies.</p>
+<p>A note on notation: first, the signs of the frequencies in the definition of the Fourier series and the Fourier integral are reversed. I believe this is purely a matter of convention. Second, mathematicians prefer to define the Fourier transform and the inverse transform as follows:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+(Alternative) definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Forward Fourier transform: <span class="math display">\[
+G(\omega) = \int_{-\infty}^\infty g(x) e^{i \omega x}dx
+\]</span></p>
+<p>Inverse Fourier Transform: <span class="math display">\[
+g(x) =  \frac{1}{2\pi} \int_{-\infty }^\infty G(\omega) e^{-i\omega x}d\omega
+\]</span></p>
+</div>
+</div>
+<p>The difference between the two definitions is small, and conceptually can be distinguished by noting that the variable <span class="math inline">\(f\)</span> in the first definition refers to a pure frequency (times per unit of <span class="math inline">\(x\)</span>) while the variable <span class="math inline">\(\omega\)</span> in the second definition refers to angular frequency (radians per unit of <span class="math inline">\(x\)</span>). The textbook uses the second definition, but we will stick with the first, because it uses pure frequency <span class="math inline">\(f\)</span> and is more consistent with the definition of the Fourier series.</p>
+</section>
+<section id="the-delta-function" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="the-delta-function"><span class="header-section-number">3.2.2</span> the delta function</h3>
+<p>As we saw above, the units of the variables <span class="math inline">\(x\)</span> and <span class="math inline">\(f\)</span> are reciprocal to each other (e.g.&nbsp;second and 1/second, or meter and 1/meter), and although the functions <span class="math inline">\(g(x)\)</span> and <span class="math inline">\(\widehat g(f)\)</span> are in some sense the same function, they have an inverse relationship with each other. The Fourier transform and the inverse Fourier transform take functions between the two domains, and thus set up pairs of “inversely” related functions. In some cases, they are simply to compute and understand analytically.</p>
+<p>For instance, if we take the pure wave <span class="math inline">\(\cos(2\pi x)\)</span>, it clearly contains only the frequencies <span class="math inline">\(\pm 1\)</span> (plus or minus because both positive and negative frequencies are inherent in any pure wave). You would expect its Fourier transform representation to be a double peak (symmetric about the origin) in the frequency space <span class="math inline">\(f\)</span>, while everywhere else it is strictly zero. If we’re dealing with Fourier series, of course, we just have two coefficients <span class="math inline">\(c_1=1/2\)</span> and <span class="math inline">\(c_{N-1} = 1/2\)</span>, with all the others being zero. However, a single value has no weight on the real line (mathematically speaking, it has “measure zero”, which means the same thing). So, mathematicians borrowed from physicists (Paul Dirac) the idea of an infinitely tall and infinitely thin spike which has finite area under the curve. This is called the delta function, and is written <span class="math inline">\(\delta(x-a)\)</span>, where <span class="math inline">\(a\)</span> is the value at which it spikes. The Fourier transform of the pure cosine wave is then described as:</p>
+<p><span class="math display">\[ \frac{1}{2}\delta(f-1) + \frac{1}{2} \delta(f+1)\]</span></p>
+<p>As a corollary, if we take the boring function <span class="math inline">\(f(x)=1\)</span>, which can be thought of as a wave of zero frequency, its Fourier transform is given by simply <span class="math inline">\(\delta(f)\)</span> - that is, an infinite spike at frequency zero. Since <span class="math inline">\(f(x)\)</span> has an infinite mean and nothing else, this makes intuitive sense.</p>
+<p>Conversely, the Fourier transform of a delta function <span class="math inline">\(\delta(x-a)\)</span> is given by:</p>
+<p><span class="math display">\[
+\int_{-\infty} ^\infty \delta(x-a) e^{i2\pi xf} dx = e^{i2\pi af} = \cos(2\pi af ) + i\sin(2\pi af)
+\]</span></p>
+<p>This uses the property of the delta function to “pick out” the value of the function it is integrated with, at the point matching its spike (in this case <span class="math inline">\(a\)</span>).</p>
+</section>
+<section id="fourier-pairs-and-the-gaussian-function" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="fourier-pairs-and-the-gaussian-function"><span class="header-section-number">3.2.3</span> Fourier pairs and the Gaussian function</h3>
+<p>A function and its Fourier transformed counterpart are know as <em>Fourier pairs</em>. What we see is that functions which are widely distributed in one domain (like the constant function or the sines or cosines) have Fourier transforms which are infinitely thin, and vice versa. This a manifestation of the inverse property of the two domains, as we vaguely saw above. There is a general property of Fourier pairs that the wider a function, the narrower its Fourier counterpart. We have investigated the extremes, let us see where the happy medium lies.</p>
+<p>The Gaussian function <span class="math inline">\(h(x)= e^{-ax^2}\)</span> is a continuous bell-shaped curve which falls off sharply from its peak at zero, and has a finite area under the curve. It has the special property that its functional form is preserved by the Fourier transform: the Fourier partner of a Gaussian is also a Gaussian. Here is the verification:</p>
+<p><span class="math display">\[
+\int_{-\infty} ^\infty e^{-ax^2} e^{i2\pi xf} dx = \int_{-\infty} ^\infty e^{[-ax^2+i2\pi xf +\frac{\pi^2}{a}f^2] - \frac{\pi^2}{a}f^2}dx = e^{- \frac{\pi^2}{a}f^2} \int_{-\infty} ^\infty e^{-a(x-i\frac{\pi}{a}f)^2}dx = e^{- \frac{\pi^2}{a}f^2}  \sqrt\frac{\pi}{a}
+\]</span></p>
+<p>In the first step we did a trick called completing the square in the exponent, by adding the term <span class="math inline">\(\pi/a f^2\)</span> to make the first part of the expression be equal to <span class="math inline">\((\sqrt{a}x-i\frac{\pi}{\sqrt{a}}f)^2=a(x-i\frac{\pi}{a}f)^2\)</span>, and subtracting the same term. Then we split up the exponential into two factors, of which one (<span class="math inline">\(e^{- \frac{\pi}{a}f^2}\)</span>) is independent of the integration variable <span class="math inline">\(x\)</span>, and can thus be brought out of the integral. What remains inside the integral is just a Gaussian function shifted over by a constant (<span class="math inline">\(-i\frac{\sqrt\pi}{a}\)</span>). You can make a change of variables <span class="math inline">\(y=x-i\frac{\sqrt\pi}{a}\)</span>, and because we are integrating over all values of <span class="math inline">\(x\)</span>, the shift does not matter, the integral still contains all the area under the Gaussian curve. Finally, we know that the total area under a Gaussian $ e<sup>{-ax</sup>2}$ equals <span class="math inline">\(\sqrt\frac{\pi}{a}\)</span>, hence the final step.</p>
+<p>Thus, the functions <span class="math inline">\(h(x)= e^{-ax^2}\)</span> and <span class="math inline">\(\widehat h(f) = \sqrt\frac{\pi}{a} e^{- \frac{\pi^2}{a}f^2}\)</span> are a Fourier pair. If we choose <span class="math inline">\(a = \pi\)</span>, you see that the exponentials of the two functions match, and the constant in <span class="math inline">\(\widehat h(f)\)</span> reduces to unity. The Gaussian function $ e<sup>{-x</sup>2}$ is its own Fourier transform, not too wide, not too narrow - the Goldilocks function.</p>
+</section>
+</section>
+<section id="convolution-and-fourier-transform" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="convolution-and-fourier-transform"><span class="header-section-number">3.3</span> Convolution and Fourier Transform</h2>
+<p>We now come to one more special property of the Fourier Transform which is useful in many different applications.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>convolution</em> of two functions is defined as follows:</p>
+<p><span class="math display">\[ h\circ g = \int _{-\infty} ^\infty h(x) g(y-x) dx \]</span></p>
+</div>
+</div>
+<p><span class="math inline">\(g(y-x)\)</span> is the function <span class="math inline">\(g(y)\)</span> horizontally translated by <span class="math inline">\(x\)</span>. Thus, you can think about this integral as follows: for every number <span class="math inline">\(y\)</span>, we sum over all the values of <span class="math inline">\(h(x)\)</span> multiplied by the value of <span class="math inline">\(g(y-x)\)</span>, which is effectively shifted by <span class="math inline">\(x\)</span>.</p>
+<p>Some important properties of the convolution, which can be easily shown by writing down the integral definition:</p>
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Properties of convolutions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>convolution of two functions is commutative: <span class="math inline">\(h \circ g = g \circ h\)</span></li>
+<li>convolution of two functions is associative: <span class="math inline">\(h \circ (g \circ f) = (h \circ g) \circ f\)</span></li>
+<li>convolution of two functions is distributive: <span class="math inline">\(h \circ (g + f) = h \circ f + h \circ f\)</span></li>
+<li>convolution preserves shifts (translations): if <span class="math inline">\(f = h \circ g\)</span>, then <span class="math inline">\(f(x-a) = h(x-a) \circ g = h \circ g (x-a)\)</span></li>
+</ul>
+</div>
+</div>
+<section id="examples" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">3.3.1</span> Examples</h3>
+<p>One simple example is based on the delta function <span class="math inline">\(\delta(x-a)\)</span> we saw in the previous lecture, which, if you recall picks out the value of the function it is integrated with that matches its spike at <span class="math inline">\(a\)</span>. Thus, if we consider:</p>
+<p><span class="math display">\[
+h(x) \circ \delta(x-a) = \int _{-\infty} ^\infty h(x) \delta(y-x-a) dx = h(y-a)
+\]</span> That is, the delta function performed a shift, or repositioning of the function <span class="math inline">\(h\)</span> by its own peak position <span class="math inline">\(a\)</span>. This property is often used in convolution applications, as we will see below.</p>
+<p>On the other extreme, we will consider a convolution with the opposite function: one which is infinitely wide. The convolution of a function with one which is unity everywhere, (<span class="math inline">\(g(x) = 1\)</span>) results in the mean value of the function <span class="math inline">\(h(x)\)</span>:</p>
+<p><span class="math display">\[
+h(x) \circ g(x) = \int _{-\infty} ^\infty h(x)  dx
+\]</span></p>
+</section>
+<section id="the-convolution-theorem" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="the-convolution-theorem"><span class="header-section-number">3.3.2</span> The Convolution Theorem</h3>
+<p>The reason why the convolution is so central to the application of Fourier Transforms is the following.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Convolution Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Fourier transform has the following special property with convolutions:</p>
+<p><span class="math display">\[
+\widehat{g \circ h} = \hat {g} \hat {h}
+\]</span></p>
+</div>
+</div>
+<p>This means that the Fourier transform of a convolution of two function is the same as the product of the two separate FT. This enables a huge computational benefit for computing Fourier transforms of signals which are naturally convolved, because it is usually much easier to compute the FT of the two individual functions.</p>
+<p>There are many physical applications where convolutions arise naturally, for instance in communications, where one function can be thought of as a signal and the other the response, and the convolution given the observed communication. It is also invaluable in imaging, where one can get a repetition of different objects by defining one function to describe the object, and the other to describe the distribution of its locations. Convolution in this case gives the overall image with multiple objects, or with objects whose location is not precise, but has a smeared distribution.</p>
+</section>
+</section>
+<section id="computational-fourier-transform-in-two-dimensions-spectral-analysis" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="computational-fourier-transform-in-two-dimensions-spectral-analysis"><span class="header-section-number">3.4</span> Computational: Fourier transform in two dimensions, spectral analysis</h2>
+<section id="power-spectrum-in-two-dimensions" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="power-spectrum-in-two-dimensions"><span class="header-section-number">3.4.1</span> power spectrum in two dimensions</h3>
+<p>As we saw above, Fourier transforms can be computed exactly for some simple functions. In practice computational methods like the Fast Fourier Transform are used to find a numerical approximation of the Fourier transform. This means that only a discrete set of values of <span class="math inline">\(\widehat h(f)\)</span> are computed. We will talk about this in the next lecture.</p>
+<p>Here I want to focus on what we take away from Fourier transform analysis. Essentially, looking at <span class="math inline">\(\widehat h(f)\)</span> gives us a frequency-based representation of the original function <span class="math inline">\(h(x)\)</span>. We can see what types of frequencies are prevalent, which are absent, etc. To quantify this, however, we need to be more precise. The function <span class="math inline">\(\widehat h(f)\)</span> is complex-valued, so we cannot even graph it in one dimension (Prove to yourself that: FT of an even function is purely real-valued, like the Gaussian example above, FT of an odd function is purely imaginary, and FT of mixed functions are complex, like the delta-function example above). Instead it is customary to consider the absolute value squared <span class="math inline">\(|\widehat h(f)|^2\)</span>, which is called the <em>power</em> of each frequency <span class="math inline">\(f\)</span>.</p>
+<p>This is convenient because the Parseval equality applies to Fourier integrals as well:</p>
+<p><span class="math display">\[
+\int_{-\infty}^\infty |h(x)|^2 dx =  \int_{-\infty}^\infty |\widehat h(f)|^2 df
+\]</span></p>
+<p>Therefore, we can look at the power distribution in frequency space (called the <em>power spectrum</em> as capturing an essential measure of the function <span class="math inline">\(h(x)\)</span> (its <span class="math inline">\(L^2\)</span> norm, if you want to get mathematical). This is the most common output of Fourier analysis, and the power spectrum plotted to describe how strong different frequencies are in the observed data.</p>
+</section>
+<section id="application-analysis-of-time-series-data" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="application-analysis-of-time-series-data"><span class="header-section-number">3.4.2</span> Application: analysis of time series data</h3>
+<p>One example of such application is the analysis of measurements recorded in time (called a <em>time series</em>, somewhat confusing for mathematicians since a series to them means a sum of multiple terms). For illustration, let us use the logistic iterated map that we studied in the first half of this course: <span class="math inline">\(x_{n+1} = rx_n(1-x_n)\)</span>. We will iterate it for several hundred steps (500 to be safe) to get it to converge to the attractor set, then record 500 steps of the steady-state time sequence and look at its power spectrum. Here is the time series and the power spectrum from <span class="math inline">\(r=3.2\)</span>:</p>
+<div id="fig-log-map-32" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-series" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figs/log_seq_32.png" class="img-fluid figure-img" data-ref-parent="fig-log-map-32"></p>
+<p></p><figcaption class="figure-caption">(a) The steady state sequence of values producef by iteration of the logistic map <span class="math inline">\(x_{n+1} = rx_n(1-x_n)\)</span> for <span class="math inline">\(r=3.2\)</span></figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-power" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figs/log_pow_32.png" class="img-fluid figure-img" data-ref-parent="fig-log-map-32"></p>
+<p></p><figcaption class="figure-caption">(b) The power spectrum of the data produced by iteration of the logistic map with <span class="math inline">\(r=3.2\)</span></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Time series and power spectrum</figcaption><p></p>
+</figure>
+</div>
+<p>You can see that a period 2 oscillation is represented by two nonzero values in the power spectrum: zero frequency (sum of all values) and frequency 1/2 (period 2). This time of sharply peaked power spectrum is expected from</p>
+<p>Now let us take the value <span class="math inline">\(r=3.8\)</span>, which leads to chaotic behavior, which is not periodic. The time series and the power spectrum are shown below:</p>
+<div id="fig-log-map-38" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-series" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figs/log_seq_38.png" class="img-fluid figure-img" data-ref-parent="fig-log-map-38"></p>
+<p></p><figcaption class="figure-caption">(a) Sequence of values produced by iteration of the logistic map <span class="math inline">\(x_{n+1} = rx_n(1-x_n)\)</span> for <span class="math inline">\(r=3.8\)</span></figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-power" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figs/log_pow_38.png" class="img-fluid figure-img" data-ref-parent="fig-log-map-38"></p>
+<p></p><figcaption class="figure-caption">(b) The power spectrum of the data produced by iteration of the logistic map with <span class="math inline">\(r=3.8\)</span></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.2: Time series and power spectrum</figcaption><p></p>
+</figure>
+</div>
+<p>You can see that the power spectrum of a chaotic time series is dramatically different: all frequencies contribute, fast and slow, but the overall appearance of the power spectrum is ragged, as they are all represented with different powers. This is a tell-tale mark of chaos: lack of well-defined peaks, and an overall unstructured appearance.</p>
+</section>
+</section>
+<section id="synthesis-fourier-transform-of-crystal-diffraction-pattern" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="synthesis-fourier-transform-of-crystal-diffraction-pattern"><span class="header-section-number">3.5</span> Synthesis: Fourier transform of crystal diffraction pattern</h2>
+<p>One important application of Fourier transforms is to optical scattering. Any time a light is scattered by an object, it results in a Fourier transform of the image of the object, and if enough photons are scattered, one can get a pretty complete picture. In the visible range, we can use lenses, such as in our eyes or in microscopes, to essentially perform the inverse Fourier transform. In X-ray crystallography, which is the primary tool for determining structures of biological molecules, it is not possible, because no optical lenses can interact with photons of that wavelength. We are left to perform the inverse Fourier transforms computationally.</p>
+<p>Each atom in the crystal scatters photons with its electron cloud. While it is easy to describe the distribution of electrons in each atom, we have many atoms arranged in a lattice, each contributing to the diffraction intensity. If we consider them all, it will be a very difficult calculation. Instead, the convolution property allows us to find the Fourier transform of a single atom (a Gaussian function, so its Fourier pair is another Gaussian) and find the transform of the idealized lattice of points, both of which are easy calculations, and then multiply them together to find the Fourier transform of the whole lattice of atoms. This gives a simplified idea of how X-ray crystallographers can make sense out of a diffraction pattern and re-create the electron density inside the molecules in the crystal.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./gradient_optimization.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

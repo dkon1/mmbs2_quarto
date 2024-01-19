@@ -174,6 +174,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
@@ -251,7 +256,7 @@ Definition
 </ol>
 </div>
 </div>
-<p>Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector <span class="math inline">\(\vec v\)</span> into another one: $ A v = u$.</p>
+<p>Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector <span class="math inline">\(\vec v\)</span> into another one: <span class="math inline">\(A \times \vec v = \vec u\)</span>.</p>
 <p><strong>Example:</strong> Let us multiply the following matrix and vector (specially chosen to make a point):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co">#package for work with arrays and matrices</span></span>
@@ -296,7 +301,9 @@ Definition
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A <em>linear combination</em> of <span class="math inline">\(n\)</span> vectors <span class="math inline">\(\{ \vec v_i \}\)</span> is a weighted sum of these vectors with any real numbers <span class="math inline">\(\{a_i\}\)</span>: <span class="math display">\[ a_1 \vec v_1+ a_2 \vec v_2... + a_n \vec v_n\]</span></p>
+<p>A <em>linear combination</em> of <span class="math inline">\(n\)</span> vectors <span class="math inline">\(\{ \vec v_i \}\)</span> is a weighted sum of these vectors with any real numbers <span class="math inline">\(\{a_i\}\)</span>: <span class="math display">\[
+a_1 \vec v_1+ a_2 \vec v_2... + a_n \vec v_n
+\]</span></p>
 </div>
 </div>
 <p>Linear combinations arise naturally from the notion of linearity, combining the additive property and the scalar multiplication property. Speaking intuitively, a linear combination of vectors produces a new vector that is related to the original set. Linear combinations give a simple way of generating new vectors, and thus invite the following definition for a collection of vectors closed under linear combinations:</p>
@@ -353,11 +360,11 @@ Definition
 <section id="projections-and-changes-of-basis" class="level3" data-number="1.2.2">
 <h3 data-number="1.2.2" class="anchored" data-anchor-id="projections-and-changes-of-basis"><span class="header-section-number">1.2.2</span> Projections and changes of basis</h3>
 <p>The representation of an arbitrary vector (point) in a vector space as a linear combination of a given basis set is called the <em>decomposition</em> of the point in terms of the basis, which gives the coordinates for the vector in terms of each basis vector. The decomposition of a point in terms of a particular basis is very useful in high-dimensional spaces, where a clever choice of a basis can allow a description of a set of points (such as a data set) in terms of contributions of only a few basis vectors, if the data set primarily extends only in a few dimensions.</p>
-<p>To obtain the coefficients of the basis vectors in a decomposition of a vector <span class="math inline">\(\vec r\)</span>, we need to perform what is termed a <em>projection</em> of the vector onto the basis vectors. Think of shining a light perpendicular to the basis vector, and measuring the length of the shadow cast by the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v_i\)</span>. If the vectors are parallel, the shadow is equal to the length of <span class="math inline">\(\vec r\)</span>; if they are orthogonal, the shadow is nonexistent. To find the length of the shadow, use the inner product of <span class="math inline">\(\vec r\)</span> and <span class="math inline">\(\vec v\)</span>, which as you recall corresponds to the cosine of the angle between the two vectors multiplied by their norms: $r, v=rv() $. We do not care about the length of the vector <span class="math inline">\(\vec v\)</span> we are projecting onto, thus we divide the inner product by the square norm of <span class="math inline">\(\vec v\)</span>, and then multiply the vector <span class="math inline">\(\vec v\)</span> by this projection coefficient:</p>
+<p>To obtain the coefficients of the basis vectors in a decomposition of a vector <span class="math inline">\(\vec r\)</span>, we need to perform what is termed a <em>projection</em> of the vector onto the basis vectors. Think of shining a light perpendicular to the basis vector, and measuring the length of the shadow cast by the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v_i\)</span>. If the vectors are parallel, the shadow is equal to the length of <span class="math inline">\(\vec r\)</span>; if they are orthogonal, the shadow is nonexistent. To find the length of the shadow, use the inner product of <span class="math inline">\(\vec r\)</span> and <span class="math inline">\(\vec v\)</span>, which as you recall corresponds to the cosine of the angle between the two vectors multiplied by their norms: <span class="math inline">\(\left \langle \vec r, \vec v\right \rangle =\vert\vec r\vert \vert\vec v\vert\cos(\theta)\)</span>. We do not care about the length of the vector <span class="math inline">\(\vec v\)</span> we are projecting onto, thus we divide the inner product by the square norm of <span class="math inline">\(\vec v\)</span>, and then multiply the vector <span class="math inline">\(\vec v\)</span> by this projection coefficient:</p>
 <p><span class="math display">\[
 Proj(\vec r ; \vec v) = \frac{ \langle \vec r , \vec v \rangle  } {\langle \vec v , \vec v \rangle } \vec v = \frac{ \langle \vec r ,  \vec v \rangle  } {\vert \vec v \vert^2} \vec v= \frac{  \vert\vec r\vert \cos(\theta) } {\vert \vec v \vert}\vec v
 \]</span></p>
-<p>This formula gives the projection of the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v\)</span>, the result is a new vector in the direction of <span class="math inline">\(\vec v\)</span>, with the scalar coefficient <span class="math inline">\(a = \ \langle \vec r , \vec v \rangle /\vert \vec v \vert^2\)</span>.</p>
+<p>This formula gives the projection of the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v\)</span>, the result is a new vector in the direction of <span class="math inline">\(\vec v\)</span>, with the scalar coefficient <span class="math inline">\(a = \langle \vec r ,\vec v \rangle /\vert \vec v \vert^2\)</span>.</p>
 <p><strong>Example:</strong> Here is how one might calculate the projection of the point <span class="math inline">\((2,1)\)</span> onto the basis set <span class="math inline">\(\{(1,1); (-1,1)\}\)</span>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -444,7 +451,9 @@ PCA algorithm
 <section id="optimization-by-explained-variance" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="optimization-by-explained-variance"><span class="header-section-number">1.4</span> Optimization by explained variance</h2>
 <p>The reason that we order the PCs by their eigenvalues is that they measure the amount of variance captured by each principal component. In that, they are equivalent to the coefficient of determination <span class="math inline">\(r^2\)</span> in linear regression. The sum of all the eigenvalues is equal to the total variance of all the variables:</p>
-<p><span class="math display">\[ \sum_i \lambda_i = \sum Var(X_i)\]</span></p>
+<p><span class="math display">\[
+\sum_i \lambda_i = \sum Var(X_i)
+\]</span></p>
 <p>and the fraction of variance captured by the a principal component is:</p>
 <p><span class="math display">\[ Var(PC_i) = \frac{\lambda_i}{\sum_i \lambda_i}\]</span></p>
 <p>The theory behind this rests on some relatively sophisticated linear algebra, in particular what is called the singular value decomposition (SVD) and the Eckart-Young Mirsky theorem. Here is a nice video by Gilbert Strang that explains this:<a href="https://www.youtube.com/watch?v=Y4f7K9XF04k">Strang lecture</a></p>

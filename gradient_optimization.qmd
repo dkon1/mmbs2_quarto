@@ -146,7 +146,7 @@ To gain some geometric intuition about gradients, let us introduce the notion of
 
 ::: callout-note
 ##  Definition
-The *countours* or *level curves* of a function $f(\vec x)$ of multiple variables $\vec x = x_1, .., x_n$ are sets of values of $\vec x$ that satisfy equations, for any given constant c:
+The *contours* or *level curves* of a function $f(\vec x)$ of multiple variables $\vec x = x_1, .., x_n$ are sets of values of $\vec x$ that satisfy equations, for any given constant c:
 
 $$ f (\vec x) = c $$
 :::

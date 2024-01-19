@@ -10,29 +10,36 @@ In this chapter we will build on the concepts of Fourier analysis introduced in 
 
 So far we have only used the idea of frequency decomposition on functions which are either periodic (repeating) with period $L$, or equivalently, if we are only interested in the function over that interval. We may want to similarly analyze a continuous function which is not periodic, and in which we are interested over the whole real line. To achieve that, we generalize the notion of a Fourier series from a sum to an integral:
 
-Forward transform:
+::: callout-note
+## Definition
+Forward Fourier transform:
 $$
 G(f) =   \int_{-\infty}^\infty g(x) e^{i2\pi f x}dx
 $$
 
-Inverse transform:
+Inverse Fourier transform:
 $$
 g(x) =  \int_{-\infty }^\infty G(f) e^{-i2\pi fx}df
 $$
+:::
 
 The first equation is called the *Fourier transform*, note that it changes the variable from $x$ (e.g. time or space) to $f$ (frequency). It is equivalent to the integral definition of $c_n$, except that $n$ was restricted to the integers, and $f$ can be any real number. This is why, for the second equation, defining the *Inverse Fourier transform*, the Fourier series becomes an integral: we have to add up the contributions of all real frequencies.
 
 A note on notation: first, the signs of the frequencies in the definition of the Fourier series and the Fourier integral are reversed. I believe this is purely a matter of convention. Second, mathematicians prefer to define the Fourier transform and the inverse transform as follows:
 
-Forward Transform:
+::: callout-note
+## (Alternative) definition
+
+Forward Fourier transform:
 $$
 G(\omega) = \int_{-\infty}^\infty g(x) e^{i \omega x}dx
 $$
 
-Inverse Transform:
+Inverse Fourier Transform:
 $$
 g(x) =  \frac{1}{2\pi} \int_{-\infty }^\infty G(\omega) e^{-i\omega x}d\omega
 $$
+:::
 
 The difference between the two definitions is small, and conceptually can be distinguished by noting that the variable $f$ in the first definition refers to a pure frequency (times per unit of $x$) while the variable $\omega$ in the second definition refers to angular frequency (radians per unit of $x$). The textbook uses the second definition, but we will stick with the first, because it uses pure frequency $f$ and is more consistent with the definition of the Fourier series.
 
@@ -83,20 +90,23 @@ $$ h\circ g = \int _{-\infty} ^\infty h(x) g(y-x) dx $$
 $g(y-x)$ is the function $g(y)$ horizontally translated by $x$. Thus, you can think about this integral as follows: for every number $y$, we sum over all the values of $h(x)$ multiplied by the value of $g(y-x)$, which is effectively shifted by $x$. 
 
 Some important properties of the convolution, which can be easily shown by writing down the integral definition:
-::: callout-note
+
+:::{.callout-tip icon=false}
 ## Properties of convolutions
 
-*  convolution of two functions is commutative: $h  \circ  g = g  \circ h$
-* convolution of two functions is associative: $ h\circ (g \circ f) = (h \circ g) \circ f$ 
-* convolution of two functions is distributive: $h  \circ (g + f) = h  \circ f + h  \circ  f $
-* convolution preserves shifts (translations): if $ f = h  \circ  g $, then $f(x-a) = h(x-a)  \circ  g = h  \circ  g (x-a)$
+*  convolution of two functions is commutative: $h \circ g = g \circ h$
+* convolution of two functions is associative: $h \circ (g \circ f) = (h \circ g) \circ f$ 
+* convolution of two functions is distributive: $h \circ (g + f) = h  \circ f + h \circ f$
+* convolution preserves shifts (translations): if $f = h  \circ  g$, then $f(x-a) = h(x-a) \circ  g = h  \circ  g (x-a)$
+
 :::
 
 ### Examples
 
-One simple example is based on the delta function $\delta(x-a)$ we saw in the previous lecture, which, if you recall picks out the value of the function it is integrated with that matches its spike at $a$. Thus, if we consider
+One simple example is based on the delta function $\delta(x-a)$ we saw in the previous lecture, which, if you recall picks out the value of the function it is integrated with that matches its spike at $a$. Thus, if we consider:
+
 $$ 
-h(x)  \circ \delta(x-a) = \int _{-\infty} ^\infty h(x) \delta(y-x-a) dx = h(y-a) 
+h(x) \circ \delta(x-a) = \int _{-\infty} ^\infty h(x) \delta(y-x-a) dx = h(y-a) 
 $$
 That is, the delta function performed a shift, or repositioning of the function $h$ by its own peak position $a$. This property is often used in convolution applications, as we will see below. 
 
@@ -107,6 +117,7 @@ h(x) \circ g(x) = \int _{-\infty} ^\infty h(x)  dx
 $$
 
 ### The Convolution Theorem
+
 The reason why the convolution is so central to the application of Fourier Transforms is the following. 
 
 ::: callout-note
@@ -130,7 +141,7 @@ As we saw above, Fourier transforms can be computed exactly for some simple func
 
 Here I want to focus on what we take away from Fourier transform analysis. Essentially, looking at $\widehat h(f)$ gives us a frequency-based representation of the original function  $h(x)$. We can see what types of frequencies are prevalent, which are absent, etc. To quantify this, however, we need to be more precise. The function  $\widehat h(f)$ is complex-valued, so we cannot even graph it in one dimension (Prove to yourself that: FT of an even function is purely real-valued, like the Gaussian example above, FT of an odd function is purely imaginary, and FT of mixed functions are complex, like the delta-function example above). Instead it is customary to consider the absolute value squared  $|\widehat h(f)|^2$, which is called the *power* of each frequency $f$.
 
-This is convenient because the Parseval equality applies to Fourier integrals as  well:
+This is convenient because the Parseval equality applies to Fourier integrals as well:
 
 $$ 
 \int_{-\infty}^\infty |h(x)|^2 dx =  \int_{-\infty}^\infty |\widehat h(f)|^2 df 
@@ -143,27 +154,33 @@ Therefore, we can look at the power distribution in frequency space (called the 
 
 One example of such application is the analysis of measurements recorded in time (called a *time series*, somewhat confusing for mathematicians since a series to them means a sum of multiple terms). For illustration, let us use the logistic iterated map that we studied in the first half of this course: $x_{n+1} = rx_n(1-x_n)$. We will iterate it for several hundred steps (500 to be safe) to get it to converge to the attractor set, then record 500 steps of the steady-state time sequence and look at its power spectrum. Here is the time series and the power spectrum from $r=3.2$:
 
-![The steady-state behavior of the logistic map $x_{n+1} = rx_n(1-x_n)$ for $r=3.2$: the sequence in time and its power spectrum.](figs/log_seq_32.png)
-   \includegraphics[width=3in]{log_seq_32.png}
-   \includegraphics[width=3in]{log_pow_32.png}  
-   \caption{}
-%   \label{fig:example}
-\end{figure}
+::: {#fig-log-map-32 layout-ncol=2}
+
+![The steady state sequence of values producef by iteration of the logistic map $x_{n+1} = rx_n(1-x_n)$ for $r=3.2$](figs/log_seq_32.png){#fig-series}
+
+![The power spectrum of the data produced by iteration of the logistic map with $r=3.2$](figs/log_pow_32.png){#fig-power}
+
+Time series and power spectrum
+:::
+
 You can see that a period 2 oscillation is represented by two nonzero values in the power spectrum: zero frequency (sum of all values) and frequency 1/2 (period 2). This time of sharply peaked power spectrum is expected from 
 
 Now let us take the value $r=3.8$, which leads to chaotic behavior, which is not periodic. The time series and the power spectrum are shown below:
-\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
-   \centering
-   \includegraphics[width=3in]{log_seq_38.png}
-   \includegraphics[width=3in]{log_pow_38.png}  
-   \caption{The steady-state behavior of the logistic map for $r=3.8$: the sequence in time and its power spectrum.}
-%   \label{fig:example}
-\end{figure}
-You can see that the power spectrum of a chaotic time series is dramatically different: all frequencies contribute, fast and slow, but the overall appearance of the power spectrum is ragged, as they are all represented with different powers. This is a tell-tale mark of chaos: lack of well-defined peaks, and an overall unstructured appearance.
 
+::: {#fig-log-map-38 layout-ncol=2}
+
+![Sequence of values produced by iteration of the logistic map $x_{n+1} = rx_n(1-x_n)$ for $r=3.8$](figs/log_seq_38.png){#fig-series}
+
+![The power spectrum of the data produced by iteration of the logistic map with $r=3.8$](figs/log_pow_38.png){#fig-power}
+
+Time series and power spectrum
+:::
+
+
+You can see that the power spectrum of a chaotic time series is dramatically different: all frequencies contribute, fast and slow, but the overall appearance of the power spectrum is ragged, as they are all represented with different powers. This is a tell-tale mark of chaos: lack of well-defined peaks, and an overall unstructured appearance.
 
 
 ## Synthesis: Fourier transform of crystal diffraction pattern
 One important application of Fourier transforms is to optical scattering. Any time a light is scattered by an object, it results in a Fourier transform of the image of the object, and if enough photons are scattered, one can get a pretty complete picture. In the visible range, we can use lenses, such as in our eyes or in microscopes, to essentially perform the inverse Fourier transform. In X-ray crystallography, which is the primary tool for determining structures of biological molecules, it is not possible, because no optical lenses can interact with photons of that wavelength. We are left to perform the inverse Fourier transforms computationally.
 
-Each atom in the crystal scatters photons with its electron cloud. While it is easy to describe the distribution of electrons in each atom, we have many atoms arranged in a lattice, each contributing to the diffraction intensity. If we consider them all, it will be a very difficult calculation. Instead, the convolution property allows us to find the Fourier transform of a single atom (a Gaussian function, so its Fourier pair is another Gaussian) and find the transform of the idealized lattice of points, both of which are easy calculations, and then multiply them together to find the Fourier transform of the whole lattice of atoms. This gives a simplified idea of how X-ray crystallographers can make sense out of a  diffraction pattern and re-create the electron density inside the molecules in the crystal. See {\tt http://www.mineralogie.uni-wuerzburg.de/crystal/teaching/conv\_a.html} for illustrations. 
+Each atom in the crystal scatters photons with its electron cloud. While it is easy to describe the distribution of electrons in each atom, we have many atoms arranged in a lattice, each contributing to the diffraction intensity. If we consider them all, it will be a very difficult calculation. Instead, the convolution property allows us to find the Fourier transform of a single atom (a Gaussian function, so its Fourier pair is another Gaussian) and find the transform of the idealized lattice of points, both of which are easy calculations, and then multiply them together to find the Fourier transform of the whole lattice of atoms. This gives a simplified idea of how X-ray crystallographers can make sense out of a  diffraction pattern and re-create the electron density inside the molecules in the crystal. 

@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./fourier_convolution.html" rel="next">
 <link href="./PCA.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -107,6 +107,11 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -341,7 +346,7 @@ Definition
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <em>countours</em> or <em>level curves</em> of a function <span class="math inline">\(f(\vec x)\)</span> of multiple variables <span class="math inline">\(\vec x = x_1, .., x_n\)</span> are sets of values of <span class="math inline">\(\vec x\)</span> that satisfy equations, for any given constant c:</p>
+<p>The <em>contours</em> or <em>level curves</em> of a function <span class="math inline">\(f(\vec x)\)</span> of multiple variables <span class="math inline">\(\vec x = x_1, .., x_n\)</span> are sets of values of <span class="math inline">\(\vec x\)</span> that satisfy equations, for any given constant c:</p>
 <p><span class="math display">\[ f (\vec x) = c \]</span></p>
 </div>
 </div>
@@ -447,7 +452,7 @@ Levenberg-Marquardt algorithm
 <li><p>Define the gradient function <span class="math inline">\(\nabla f (\vec x)\)</span> and the Hessian function <span class="math inline">\(H(\vec x)\)</span></p></li>
 <li><p>Start at some point <span class="math inline">\(\vec x_0\)</span> (as long as it is not the minimum) and set <span class="math inline">\(\lambda\)</span> to be large (e.g.&nbsp;1000)</p></li>
 <li><p>Update the point using <span class="math inline">\(\vec x_{i+1} = \vec x_i - \left(H(\vec x_i) + \lambda diag[H(\vec x_i) ] \right)^{-1} \nabla f(\vec x_i)\)</span></p></li>
-<li><p>If $f(x_{i+1}) &lt; f(x_i) $ (the new point is an improvement), accept <span class="math inline">\(\vec x_{i+1}\)</span> and divide <span class="math inline">\(\lambda\)</span> by a factor <span class="math inline">\(S\)</span> (which can be set to be any positive real number, usually in the range of 2-10)</p></li>
+<li><p>If <span class="math inline">\(f(\vec x_{i+1}) &lt; f(\vec x_i)\)</span> (the new point is an improvement), accept <span class="math inline">\(\vec x_{i+1}\)</span> and divide <span class="math inline">\(\lambda\)</span> by a factor <span class="math inline">\(S\)</span> (which can be set to be any positive real number, usually in the range of 2-10)</p></li>
 <li><p>else (if the point is not an improvement) keep <span class="math inline">\(\vec x_i\)</span> as the current point and multiply <span class="math inline">\(\lambda\)</span> by <span class="math inline">\(S\)</span></p></li>
 <li><p>Repeat until <span class="math inline">\(|| \vec x_{i+1} - \vec x_i || &lt; \epsilon_{tol}\)</span>, where <span class="math inline">\(\epsilon_{tol}\)</span> is the specified tolerance</p></li>
 </ol>
@@ -600,8 +605,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./fourier_convolution.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
