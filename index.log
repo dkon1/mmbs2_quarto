@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.3.16)  13 FEB 2024 13:59
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.3.16)  13 FEB 2024 17:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1266,17 +1266,16 @@ Overfull \hbox (9.76106pt too wide) detected at line 1910
 [] [] [] [] [] [] [] [][] [] [] []
  []
 
-[38] [39] [40]
-
-LaTeX Warning: Reference `fig:mc_base_sub' on page 41 undefined on input line 2082.
-
-[41]
+[38] [39] [40] [41]
 File: figs/base_sub_01.png Graphic file (type bmp)
 <figs/base_sub_01.png>
 File: figs/base_sub_001.png Graphic file (type bmp)
 <figs/base_sub_001.png>
 [42] [43]
-Missing character: There is no 𝛼 (U+1D6FC) in font [lmroman10-regular]:mapping=tex-text;!
+
+LaTeX Warning: Command \^ invalid in math mode on input line 2159.
+
+Missing character: There is no ̂ ("302) in font lmmi10!
 [44] [45] [46]
 
 ! LaTeX Error: Something's wrong--perhaps a missing \item.
@@ -1285,12 +1284,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.2252 \end{CSLReferences}
+l.2268 \end{CSLReferences}
                            
 Here is how much of TeX's memory you used:
  39361 strings out of 478663
- 810042 string characters out of 5847234
- 1871018 words of memory out of 5000000
+ 810032 string characters out of 5847234
+ 1870018 words of memory out of 5000000
  58884 multiletter control sequences out of 15000+600000
  519741 words of font info for 95 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

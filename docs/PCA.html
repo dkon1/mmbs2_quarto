@@ -290,12 +290,12 @@ Definition
 </div>
 <p>Here we have two types of objects: vectors and transformations/operators that act on those vectors. The basic example of this are vectors and matrices, because a matrix multiplied by a vector (on the right) results another vector, provided the number of columns in the matrix is the same as the number of rows in the vector. This can be interpreted as the matrix transforming the vector <span class="math inline">\(\vec v\)</span> into another one: <span class="math inline">\(A \times \vec v = \vec u\)</span>.</p>
 <p><strong>Example:</strong> Let us multiply the following matrix and vector (specially chosen to make a point):</p>
-<div id="9b39845b" class="cell" data-execution_count="1">
+<div id="f9b2ca61" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co">#package for work with arrays and matrices</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt <span class="co">#package with plotting capabilities</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns<span class="op">;</span> sns.<span class="bu">set</span>() <span class="co"># colors for visualization</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="30be65ea" class="cell" data-execution_count="2">
+<div id="a7ccf7e7" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Mat <span class="op">=</span> np.array([[<span class="dv">2</span>, <span class="dv">1</span>],[<span class="dv">2</span>, <span class="dv">3</span>]])</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>vec1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>])</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>vec2 <span class="op">=</span> Mat<span class="op">@</span>vec1</span>
@@ -307,7 +307,7 @@ Definition
 </div>
 </div>
 <p>We see that this particular vector <span class="math inline">\((1,-1)\)</span> is unchanged when multiplied by this matrix, or we can say that the matrix multiplication is equivalent to multiplication by 1. Here is another such vector for the same matrix:</p>
-<div id="488195a5" class="cell" data-execution_count="3">
+<div id="5bf4e279" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vec1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>])</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>vec2 <span class="op">=</span> Mat<span class="op">@</span>vec1</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vec1)</span>
@@ -394,7 +394,7 @@ Proj(\vec r ; \vec v) = \frac{ \langle \vec r , \vec v \rangle  } {\langle \vec 
 \]</span></p>
 <p>This formula gives the projection of the vector <span class="math inline">\(\vec r\)</span> onto <span class="math inline">\(\vec v\)</span>, the result is a new vector in the direction of <span class="math inline">\(\vec v\)</span>, with the scalar coefficient <span class="math inline">\(a = \langle \vec r ,\vec v \rangle /\vert \vec v \vert^2\)</span>.</p>
 <p><strong>Example:</strong> Here is how one might calculate the projection of the point <span class="math inline">\((2,1)\)</span> onto the basis set <span class="math inline">\(\{(1,1); (-1,1)\}\)</span>:</p>
-<div id="e1c02cbc" class="cell" data-execution_count="4">
+<div id="2ff64bf8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">1</span>]) <span class="co"># basis vector 1</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>v2 <span class="op">=</span> np.array([<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>]) <span class="co"># basis vector 2</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> np.array([<span class="dv">2</span>, <span class="dv">1</span>])  <span class="co"># a vector represented in usual coordinates</span></span>
@@ -410,7 +410,7 @@ Proj(\vec r ; \vec v) = \frac{ \langle \vec r , \vec v \rangle  } {\langle \vec 
 </div>
 </div>
 <p>This is not quite right: the projection coefficients are off by a factor of two compared to the correct values in the example above. This is because we have neglected to <em>normalize</em> the basis vectors, so we should modify the script as follows:</p>
-<div id="57c85c34" class="cell" data-execution_count="5">
+<div id="8368f1db" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="op">=</span> v1<span class="op">/</span>np.<span class="bu">sum</span>(v1<span class="op">**</span><span class="dv">2</span>) <span class="co"># normalize basis vector 1</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>v2 <span class="op">=</span> v2<span class="op">/</span>np.<span class="bu">sum</span>(v2<span class="op">**</span><span class="dv">2</span>) <span class="co"># normalize basis vector 2</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ProjMat <span class="op">=</span> np.array([[v1], [v2]]) <span class="co"># matrix of basis vectors</span></span>

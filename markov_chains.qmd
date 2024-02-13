@@ -94,7 +94,7 @@ We can go further and compute the probability of the weather two days
 into the future, by applying the transition probabilities again:
 $P(W\_{n+2} = S ) =$
 $$P(W_{n+2} = S | W_{n+1} = S) P(W_{n+1} = S) + P(W_{n+2} = S | W_{n+1} = C) P(W_{n+1} = C) = 0.8 * 0.8  + 0.3* 0.2 = 0.7$$
-and also \$P(W\_{n+2} = C) = \$
+and also $P(W_{n+2} = C) =$
 $$P(W_{n+2} = C | W_{n+1} = S) P(W_{n+1} = S) + P(W_{n+2} = C | W_{n+1} = C) P(W_{n+1} = C) = 0.2 *0.8  + 0.7* 0.2 = 0.3$$
 
 These calculations could be written more succinctly as a product of a
@@ -122,9 +122,13 @@ the transition matrix $M$ where each element $\pi_{ij}$ (in the $i$-th
 row and the $j$-th column) is known as a *transition probability*
 $P(X_{n+1} = x_i | X_n = x_j)$, where $x_i$ and $x_j$ are the $i$-th and
 the $j$-th state of the random variable $X_n$. Then, as we saw above,
-the probability distribution at time $n$ is given by: $$ 
+the probability distribution at time $n$ is given by:
+
+$$ 
 P_{n+1} = MP_n \; \Longrightarrow P_{n} = M^nP_0
-$$ where $P_0$ is initial probability distribution.
+$$
+
+where $P_0$ is initial probability distribution.
 
 What makes such a stochastic process *Markovian* is a deep assumption
 which is implicit in our definition. We assumed that we can calculate
@@ -145,9 +149,9 @@ The transition matrices, a.k.a. Markov matrices, have some special
 properties that help us compute the Markov chain they generate:
 
 -   By construction each column of a Markov matrix (with $m$ states) has
-    to add up to 1, because
-    $$\sum_{i=1}^{m} \pi_{ij} = \sum_{i=1}^{m} P(X_{n+1} = x_i | X_n = x_j) = 1$$
-    since all possible outcomes have to add up to 1.
+    to add up to 1, because $$
+    \sum_{i=1}^{m} \pi_{ij} = \sum_{i=1}^{m} P(X_{n+1} = x_i | X_n = x_j) = 1
+    $$ since all possible outcomes have to add up to 1.
 -   Multiplying a probability distribution vector by a Markov matrix
     preserves the property that all elements add up to 1 (check for
     yourself that this follows from the first property.)
@@ -184,11 +188,16 @@ parent has $AA$ is $P (A | AA) = 1$, similarly $P(A | aa) = 0$, and
 $P(A | Aa) = 1/2$. Then we can calculate the total probability of
 inheriting an allele in the next generation is:
 $$ P(A) = P (A | AA)p_0 + P(A | aa) q_0 + P(A | Aa) r_0 = p_0 + r_0/2$$
+
 $$ P(a) = P (A | AA)p_0 + P(A | aa) q_0 + P(A | Aa) r_0 = q_0 + r_0/2$$
+
 The probability of having the genotype $AA$ is the product of the two
 probabilities, because of the independence assumption in random mating.
 Thus we obtain the frequencies of the three genotypes in the next
-generation: $$P(AA) = P(A) P(A) = (p_0 + r_0/2)^2 = p_1$$
+generation:
+
+$$P(AA) = P(A) P(A) = (p_0 + r_0/2)^2 = p_1$$
+
 $$P(aa) = P(a) P(a) = (q_0 + r_0/2)^2 = q_1$$
 $$P(Aa) = P(A) P(a) + P(a)P(A) = 2(q_0 + r_0/2)(p_0 + r_0/2) = r_1$$
 
@@ -208,7 +217,7 @@ matrix is then:
 $$ M = \left(\begin{array}{ccc}p + r/2 & 0 & p/2 + r/4 \\0 & q + r/2 & q/2 + r/4 \\ q + r/2 &  p + r/2 & p/2 + q/2 + r/2\end{array}\right) $$
 
 Here we can find the equilibrium distribution by requiring that
-$M P_eq = P_eq$, which is equivalent to the following equations:
+$M P_s = P_s$, which is equivalent to the following equations:
 
 $$ p = p (p + r/2) + r (p/2 + r/4) = (p + r/2)^2$$
 $$ q = q(q + r/2) + r (q/2 + r/4) = (q + r/2)^2 $$
@@ -239,7 +248,9 @@ $t$ as follows:
 
 $$   
 \left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_{t+1}  = \left(\begin{array}{cccc}1-\alpha & \alpha/3 & \alpha/3 & \alpha/3 \\\alpha/3 & 1-\alpha & \alpha/3 & \alpha/3 \\\alpha/3 & \alpha/3 & 1-\alpha & \alpha/3 \\\alpha/3 & \alpha/3 & \alpha/3 & 1-\alpha\end{array}\right) \left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_t 
-$$ This model is very simple: it only considers substitutions, although
+$$
+
+This model is very simple: it only considers substitutions, although
 other mutations are possible, e.g. insertions and deletions, although
 they are typically more disruptive and thus more rare, and it treats all
 substitutions as equally likely, which is not empirically true. The
@@ -251,7 +262,9 @@ parameter $\alpha$, only the eigenvalues do:
 
 $$  
 \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) \lambda =1; \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right)\lambda =1-4/3\alpha;  \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right)\lambda =1-4/3\alpha;  \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right)\lambda =1-4/3\alpha 
-$$ Notice two things: first, the first eigenvector is the equilibrium
+$$
+
+Notice two things: first, the first eigenvector is the equilibrium
 distribution and has the same frequencies for all four bases. Second,
 the three eigenvectors with eigenvalues smaller than 1 have negative
 entries, so they cannot be probability distributions themselves
@@ -267,9 +280,9 @@ algebra textbooks.)
 Computationally, this allows us to predict the time evolution of a
 distribution of bases in a DNA sequence for any given initial
 distribution, by using repeated matrix multiplication as above. Figure
-\ref{fig:mc_base_sub} shows the results starting with a non-equilibrium
-base distribution for 20 generations, with different substitution rates.
-It is evident that for a faster substitution rate the approach to the
+below shows the results starting with a non-equilibrium base
+distribution for 20 generations, with different substitution rates. It
+is evident that for a faster substitution rate the approach to the
 equilibrium distribution is faster. This demonstrates an important role
 of the second-largest eigenvalue of the Markov matrix: it determines the
 speed of convergence to the equilibrium distribution (more on this
@@ -314,19 +327,22 @@ appropriate eigenvalue. Thus,
 $$ 
 P_t = M^t P_0 =   1^t \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) + (1-4/3\alpha)^t\left( \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) +  \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) \right)
 $$ The first element of $P_t$ is the probability of a nucleotide
-remaining $A$ after $t$ generation, and it is: \$ P_t (A ) = 1/4
-+3/4(1-4/3\alpha)\^t \$. For $t=0$, the probability is 1, as it should
-be, and as $t \rightarrow \infty$, $P_t (A) \rightarrow 1/4$, since this
-is the equilibrium probability distribution. Note that the expression is
-the same for all the other letters, so we have found the expression for
-any nucleotide remaining the same after $t$ generations.
+remaining $A$ after $t$ generation, and it is:
+$P_t (A ) = 1/4 +3/4(1-4/3\alpha)\^t$. For $t=0$, the probability is 1,
+as it should be, and as $t \rightarrow \infty$,
+$P_t (A) \rightarrow 1/4$, since this is the equilibrium probability
+distribution. Note that the expression is the same for all the other
+letters, so we have found the expression for any nucleotide remaining
+the same after $t$ generations.
 
 Now let us get to the question of calculating the time that two
 sequences have evolved from each other. Denote by $m$ the fraction of
 sites in two aligned sequences with different letters, and $q$ is the
 probability of a nucleotide remaining the same, which is the given by
 the expression for $P_t(A)$. Thus
-$m = 1 - q = 3/4 - 3/4(1-4/3\alpha)^t$. This can be solved for $t$: $$ 
+$m = 1 - q = 3/4 - 3/4(1-4/3\alpha)^t$. This can be solved for $t$:
+
+$$ 
 t = \frac{\log (1 - 4/3 m)}{\log (1 -4/3 \alpha)}
 $$
 
@@ -342,16 +358,18 @@ including those which reverse an earlier mutation, and cause the
 sequence to revert to its initial letter.
 
 Now, let us assume $\alpha$ is small, as typically the number of
-substitutions per generation per nucleotide is small \[reference\].
-Then, by a Taylor expansion of the logarithm around 1,
+substitutions per generation per nucleotide is small. Then, by a Taylor
+expansion of the logarithm around 1,
 $\log (1 -4/3 \alpha) \approx - 4/3\alpha$. Using the formula for $t$
 from above with this approximation, we find the Jukes-Cantor
 phylogenetic distance to be:
 
 $$ 
 d_{JC} = \frac{\log (1 - 4/3 m)}{ -4/3 \alpha} \alpha =  -\frac{3}{4}\log (1 - 4/3 m)
-$$ This formula has the correct behavior in the two limits: when
-$m = 0$, $d_{JC} = 0$ (identical sequences have zero distance), and when
+$$
+
+This formula has the correct behavior in the two limits: when $m = 0$,
+$d_{JC} = 0$ (identical sequences have zero distance), and when
 $m \rightarrow 3/4$, $d_{JC} \rightarrow \infty$, since 3/4 is the
 maximum possible fraction of differences under the Jukes-Cantor model.
 Thus, we have obtained an analytic formula for the phylogenetic distance
