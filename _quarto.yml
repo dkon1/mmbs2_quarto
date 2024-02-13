@@ -11,6 +11,8 @@ book:
     - PCA.qmd
     - gradient_optimization.qmd
     - fourier_convolution.qmd
+    - optimization_MC.qmd
+    - markov_chains.qmd
     - references.qmd
 
 bibliography: references.bib

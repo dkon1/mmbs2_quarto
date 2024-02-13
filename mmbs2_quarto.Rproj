@@ -11,3 +11,14 @@ Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
+
+MarkdownWrap: Column
+MarkdownWrapAtColumn: 72
+MarkdownReferences: Document
+MarkdownCanonical: Yes
+
+ZoteroLibraries: "My Library"
+
+PythonType: system
+PythonVersion: 3.11.5
+PythonPath: /usr/local/bin/python3

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Mathematical Methods for Biology, Part 2 - References</title>
+<title>Mathematical Methods for Biology, Part 2 - 4&nbsp; Discrete optimization problems: Monte Carlo search</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,26 +20,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -49,7 +30,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./markov_chains.html" rel="prev">
+<link href="./markov_chains.html" rel="next">
+<link href="./fourier_convolution.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -87,6 +69,35 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -99,7 +110,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./optimization_MC.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -150,7 +161,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./optimization_MC.html" class="sidebar-item-text sidebar-link">
+  <a href="./optimization_MC.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></span></a>
   </div>
 </li>
@@ -162,7 +173,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -172,14 +183,22 @@ div.csl-indent {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">4.1</span> Monte Carlo methods</a></li>
+  <li><a href="#traveling-salesman-problem" id="toc-traveling-salesman-problem" class="nav-link" data-scroll-target="#traveling-salesman-problem"><span class="header-section-number">4.2</span> Traveling Salesman Problem</a></li>
+  <li><a href="#simple-protein-folding-model-hp-on-a-lattice" id="toc-simple-protein-folding-model-hp-on-a-lattice" class="nav-link" data-scroll-target="#simple-protein-folding-model-hp-on-a-lattice"><span class="header-section-number">4.3</span> Simple protein folding model: HP on a lattice</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">References</h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></h1>
 </div>
 
 
@@ -196,11 +215,29 @@ div.csl-indent {
 </header>
 
 
-<div id="refs" role="list">
+<section id="monte-carlo-methods" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">4.1</span> Monte Carlo methods</h2>
+<p>Monte Carlo algorithms are used to find the optimal solution in a large space of possible solutions, by randomly generating new candidates and randomly deciding whether to accept or reject them. The stochastic approach does not guarantee finding the global optimum, however, it enables one to sample the space of possibilities, far outside of the vicinity of the initial guess. Here is the outline of the method:</p>
+<ol type="1">
+<li><p>Start with an initial guess <span class="math inline">\(\vec x_0\)</span></p></li>
+<li><p>Generate a new candidate <span class="math inline">\(\vec x_{i+1}\)</span>, usually using a random algorithm. For example, given a path for the TSP, one can generate a new candidate path by swapping the order of two randomly chosen cities.</p></li>
+<li><p>Evaluate the objecting function of the new candidate state and compare with the objective function at the old state. If the new candidate is better (<span class="math inline">\(f(\vec x_{i+1}) &lt; f(\vec x_i)\)</span>), accept the new state. If the new candidate does not have a lower objective function, use the <em>Metropolis criterion</em> to randomly decide whether to accept the new state. Thus, if <span class="math inline">\(f(\vec x_{i+1}) &gt; f(\vec x_i)\)</span>, accept the new state with probability <span class="math inline">\(P = e^{f(\vec x_{i-1}) - f(\vec x_i)}\)</span>.</p></li>
+<li><p>Repeat until the algorithm no longer seems to improve the predictions: usually, until a maximum number of consecutive rejections is reached.</p></li>
+</ol>
+<p>The fact that the Monte Carlo algorithm sometimes will accept a worse (in term of the objective function) new candidate state means that it is capable of climbing out of a local well which may not be the deepest. This, of course, still does not guarantee that it finds the global minimum in any finite amount of time. However, given enough iterations, Monte Carlo can explore the space of possible states and find something close to the global optimum.</p>
+</section>
+<section id="traveling-salesman-problem" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="traveling-salesman-problem"><span class="header-section-number">4.2</span> Traveling Salesman Problem</h2>
+<p>We now proceed to complex optimization problems for which the objective function either has no exact formula, or there is no way of computing gradients and curvatures. One such class of cases are functions for which the variables have only discrete domains. A famous example is the <em>traveling salesman problem</em>, in which the goal is to find the optimal order of visiting <span class="math inline">\(N\)</span> cities, with optimal meaning the order with the lowest total distance traveled. This seemingly simple problem has no efficient algorithm for solving it exactly - it belongs to a class of problems known as ``NP-complete’’ (I will not attempt to explain the terminology here). All exact methods for solving the TSP are as inefficient as the brute force method of considering every possible order of visiting the cities, calculating the total distance of each, and picking the best one. However, since the number of such paths is <span class="math inline">\(N!\)</span>, this is an impractical way of solving the problem.</p>
+</section>
+<section id="simple-protein-folding-model-hp-on-a-lattice" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="simple-protein-folding-model-hp-on-a-lattice"><span class="header-section-number">4.3</span> Simple protein folding model: HP on a lattice</h2>
+<p>Protein folding, as mentioned above, is a very complex problem of finding the global energy minimum is a very large space of states. The main driving force behind the process is the hydrophobic effect: the preference of hydrophobic (oily) amino acid residues to stick together and minimize their interactions with water. Some residues are hydrophobic, and others are polar, and the latter usually end up in the interior of a folded protein structure.</p>
+<p>One extremely simple type of models to study the mechanism of protein folding is the HP model on a lattice, where a protein is modeled as a chain of beads, representing amino acid residues, each either hydrophobic (H) or polar (P) in character. The positions of the beads are restricted to a lattice, typically of cubic symmetry, so there are only a discrete number of possible conformations, but just like in the traveling salesman problem, they grow exponentially. To construct a possible protein “conformation”, one can start the chain at one end, and then place the next bead in one of the neighboring lattice points which not occupied. If one chooses the next step randomly, it is called a “self-avoiding random walk”.</p>
+<p>The object is to find the conformation which minimizes the total energy. Total energy is HP models can be defined differently, but the simplest calculation is just to count the number of pairs of hydrophobic resides which are neighbors (one lattice point away) and take the negative of that number to be the total energy. Thus, there is a payoff for placing hydrophobic residues near each other, and no effect from the location of polar residues (which is not physically correct). You will use the computer lab to explore this model using a Monte Carlo approach.</p>
 
-</div>
 
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -592,11 +629,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./markov_chains.html" class="pagination-link  aria-label=" &lt;span="" models="" and="" transition="" matrices&lt;="" span&gt;"="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></span>
+      <a href="./fourier_convolution.html" class="pagination-link  aria-label=" &lt;span="" transforms="" and="" convolutions&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./markov_chains.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Markov models and transition matrices</span>">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

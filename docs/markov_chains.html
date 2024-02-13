@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Mathematical Methods for Biology, Part 2 - 5&nbsp; Markov models and transition matrices</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./optimization_MC.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markov_chains.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Mathematical Methods for Biology, Part 2</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization_MC.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markov_chains.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#independence-of-random-variables" id="toc-independence-of-random-variables" class="nav-link active" data-scroll-target="#independence-of-random-variables"><span class="header-section-number">5.1</span> Independence of random variables</a>
+  <ul class="collapse">
+  <li><a href="#example-strings-of-binary-trials" id="toc-example-strings-of-binary-trials" class="nav-link" data-scroll-target="#example-strings-of-binary-trials"><span class="header-section-number">5.1.1</span> Example: strings of binary trials</a></li>
+  </ul></li>
+  <li><a href="#random-variables-that-change-with-time" id="toc-random-variables-that-change-with-time" class="nav-link" data-scroll-target="#random-variables-that-change-with-time"><span class="header-section-number">5.2</span> Random variables that change with time</a>
+  <ul class="collapse">
+  <li><a href="#computing-the-probability-one-step-ahead" id="toc-computing-the-probability-one-step-ahead" class="nav-link" data-scroll-target="#computing-the-probability-one-step-ahead"><span class="header-section-number">5.2.1</span> Computing the probability one step ahead</a></li>
+  </ul></li>
+  <li><a href="#markov-chains" id="toc-markov-chains" class="nav-link" data-scroll-target="#markov-chains"><span class="header-section-number">5.3</span> Markov chains</a>
+  <ul class="collapse">
+  <li><a href="#properties-of-markov-transition-matrices" id="toc-properties-of-markov-transition-matrices" class="nav-link" data-scroll-target="#properties-of-markov-transition-matrices"><span class="header-section-number">5.3.1</span> properties of Markov transition matrices</a></li>
+  <li><a href="#example-hardy-weinberg-equilibrium" id="toc-example-hardy-weinberg-equilibrium" class="nav-link" data-scroll-target="#example-hardy-weinberg-equilibrium"><span class="header-section-number">5.3.2</span> Example: Hardy-Weinberg equilibrium</a></li>
+  <li><a href="#example-models-of-base-substitution-in-dna" id="toc-example-models-of-base-substitution-in-dna" class="nav-link" data-scroll-target="#example-models-of-base-substitution-in-dna"><span class="header-section-number">5.3.3</span> Example: models of base substitution in DNA</a></li>
+  <li><a href="#kimura-model" id="toc-kimura-model" class="nav-link" data-scroll-target="#kimura-model"><span class="header-section-number">5.3.4</span> Kimura model</a></li>
+  <li><a href="#example-genetic-drift-as-bernoulli-trials" id="toc-example-genetic-drift-as-bernoulli-trials" class="nav-link" data-scroll-target="#example-genetic-drift-as-bernoulli-trials"><span class="header-section-number">5.3.5</span> Example: genetic drift as Bernoulli trials</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="independence-of-random-variables" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="independence-of-random-variables"><span class="header-section-number">5.1</span> Independence of random variables</h2>
+<p>Two events are independent if: <span class="math inline">\(P(A\|B) = P(A)\)</span>. Since by definition the conditional probability is <span class="math inline">\(P(A|B) = P(A\cap B)/P(B)\)</span>, the notion of independence can be expressed as the <em>product rule</em>, that states that two events are independent if and only if:<span class="math display">\[
+P(A \cap B) = P(B)P(A)
+\]</span> Note that this allows us to shift the definition onto random variables, since probability of a value <span class="math inline">\(x\)</span> of a random variable <span class="math inline">\(X\)</span> corresponds to the probability of the event that gets mapped to <span class="math inline">\(x\)</span>. Thus, the same definition applied to two random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, in slightly different notation <span class="math display">\[
+P(X=x,Y=y) = P(X=x)P(Y=y)
+\]</span> for all values of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</p>
+<section id="example-strings-of-binary-trials" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="example-strings-of-binary-trials"><span class="header-section-number">5.1.1</span> Example: strings of binary trials</h3>
+<p>The notion of independence is extremely useful for computing probability of more complicated random variables. If we assume that Bernoulli trials are independent of each other, then we can immediately calculate the probability of a string of 0s and 1s or Ws and Ls given the probability of a win is <span class="math inline">\(p\)</span> and that of a loss is <span class="math inline">\(q\)</span>. For example: <span class="math inline">\(P(\{WWLWL\}) = p^3q^2\)</span>.</p>
+<p>In practice, independence between processes is rarely perfectly true. However, computing the probability of two random variables without independence is such a pain that it is often very useful to make the independence assumption, and then test it against the data. If it stands up, you have a good predictive model, and if it does not, you have learned that two processes are somehow linked, which is very useful.</p>
+</section>
+</section>
+<section id="random-variables-that-change-with-time" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="random-variables-that-change-with-time"><span class="header-section-number">5.2</span> Random variables that change with time</h2>
+<p>A <em>stochastic process</em> is a sequence of random variables that change with time. The changes may be in discrete time steps that can be counted, and then we denote the random variable at time step <span class="math inline">\(n\)</span> <span class="math inline">\(X_n\)</span>. If time is continuous, not broken up into countable steps, then there are infinitely many random variables <span class="math inline">\(X_t\)</span> for any real number <span class="math inline">\(t\)</span>. The random variables are assumed to all be functions with the same domain (sample space), and with the same range (the numbers that they can assume). What changes over time is the probability distribution function of the random variables.</p>
+<p>We already saw sequences of random variables in the case of repeated Bernoulli trials. Those trials were independent of each other and each random variable <span class="math inline">\(X_n\)</span> had the same probability distribution. In (most) other situations, the probability distribution at time <span class="math inline">\(n\)</span> depends on the distributions before, or the history of the stochastic process.</p>
+<section id="computing-the-probability-one-step-ahead" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="computing-the-probability-one-step-ahead"><span class="header-section-number">5.2.1</span> Computing the probability one step ahead</h3>
+<p>Let us say we know the probability distribution of <span class="math inline">\(X_n\)</span>, and we want to know the probability distribution of <span class="math inline">\(X_{n+1}\)</span>. By the definition of conditional probability, <span class="math inline">\(P(X_{n+1} = x \; and \; X_n = y) = P(X_{n+1} =x | X_n = y) P(X_n = y)\)</span>. Then, to find the total probability of <span class="math inline">\(X_{n+1} = x\)</span>, add up all the probabilities <span class="math inline">\(P(X_{n+1} = x \; and \; X_n=y)\)</span> for all possible values of <span class="math inline">\(X_n\)</span>, since they add up to the whole sample space:</p>
+<p><span class="math display">\[
+P(X_{n+1} = x) = \sum _ {all \; y} P(X_{n+1} = x \; and \; X_n = y) = \sum _ {all \; y} P(X_{n+1} =x | X_n = y) P(X_n = y)
+\]</span></p>
+<p>Therefore, to compute the probability distribution of the next random variable in time, we need to know the conditional probabilities of the next random variable given the previous one. These are called <em>transition probabilities</em> and are the basis of the models we will be studying.</p>
+<section id="example-weather-changes" class="level4" data-number="5.2.1.1">
+<h4 data-number="5.2.1.1" class="anchored" data-anchor-id="example-weather-changes"><span class="header-section-number">5.2.1.1</span> Example: weather changes</h4>
+<p>Suppose that the weather changes in a random way (big surprise), and we divide it in only two states: sunny (<span class="math inline">\(S\)</span>) and cloudy (<span class="math inline">\(C\)</span>). Suppose that the weather tomorrow <span class="math inline">\(W_{n+1}\)</span> depends on the weather today <span class="math inline">\(W_n\)</span> with the following transition probabilities (perhaps obtained empirically over years of observations) given in the table below.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th>sunny today</th>
+<th>cloudy today</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sunny tomorrow</td>
+<td>0.8</td>
+<td>0.3</td>
+</tr>
+<tr class="even">
+<td>cloudy tomorrow</td>
+<td>0.2</td>
+<td>0.7</td>
+</tr>
+</tbody>
+</table>
+<p>Given these conditional probabilities, we can compute the probability distribution of the weather tomorrow given the weather today, e.g., if today is sunny, then the probability it will be sunny tomorrow is <span class="math inline">\(P(W_{n+1} = S ) =\)</span> <span class="math display">\[ = P(W_{n+1} = S | W_n = S) P(W_n = S) + P(W_{n+1} = S | W_n = C) P(W_n = C) = 0.8 * 1  + 0.3* 0 = 0.8\]</span> Similarly <span class="math inline">\(P(W_{n+1} = C)=\)</span> <span class="math display">\[ = P(W_{n+1} = C | W_n = S) P(W_n = S) + P(W_{n+1} = C | W_n = C) P(W_n = C) = 0.2 * 1  + 0.7* 0 = 0.2\]</span></p>
+<p>We can go further and compute the probability of the weather two days into the future, by applying the transition probabilities again: <span class="math inline">\(P(W\_{n+2} = S ) =\)</span> <span class="math display">\[P(W_{n+2} = S | W_{n+1} = S) P(W_{n+1} = S) + P(W_{n+2} = S | W_{n+1} = C) P(W_{n+1} = C) = 0.8 * 0.8  + 0.3* 0.2 = 0.7\]</span> and also $P(W_{n+2} = C) = $ <span class="math display">\[P(W_{n+2} = C | W_{n+1} = S) P(W_{n+1} = S) + P(W_{n+2} = C | W_{n+1} = C) P(W_{n+1} = C) = 0.2 *0.8  + 0.7* 0.2 = 0.3\]</span></p>
+<p>These calculations could be written more succinctly as a product of a <em>transition matrix</em> <span class="math inline">\(M\)</span> and the vector with the probability distribution. The probabilities for next day’s weather given sunny weather today are: <span class="math display">\[  
+\left(\begin{array}{cc}0.8&amp; 0.3 \\0.2 &amp; 0.7\end{array}\right)   \left(\begin{array}{c}1\\0 \end{array}\right) =  \left(\begin{array}{c} 0.8\\0.2\end{array}\right)  
+\]</span> And the probabilities for the next day are computed by multiplying by the matrix again. So it can be written as multiplying the first probability distribution by the square of the transition matrix:</p>
+<p><span class="math display">\[
+\left(\begin{array}{cc}0.8&amp; 0.3 \\0.2 &amp; 0.7\end{array}\right) \left(\begin{array}{c}0.8\\0.2 \end{array}\right) =   \left(\begin{array}{cc}0.8&amp; 0.3 \\0.2 &amp; 0.7\end{array}\right)  \left(\begin{array}{cc}0.8&amp; 0.3 \\0.2 &amp; 0.7\end{array}\right)  \left(\begin{array}{c}1\\0 \end{array}\right) =  \left(\begin{array}{cc}0.8&amp; 0.3 \\0.2 &amp; 0.7\end{array}\right) ^2  \left(\begin{array}{c}1\\0 \end{array}\right) = \left(\begin{array}{c} 0.7\\0.3\end{array}\right)
+\]</span> We can multiply the initial distribution by the transition matrix <span class="math inline">\(n\)</span> times obtain the probability distribution for weather <span class="math inline">\(n\)</span> days in the future.</p>
+</section>
+</section>
+</section>
+<section id="markov-chains" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="markov-chains"><span class="header-section-number">5.3</span> Markov chains</h2>
+<p>The above is an example of generating a sequence of probability distributions for random variables known as a <em>Markov chain</em>. The random variables must have a finite number of possible values (known as states) so the probability distributions can be written as vectors <span class="math inline">\(P_n\)</span>, and the transition matrix <span class="math inline">\(M\)</span> where each element <span class="math inline">\(\pi_{ij}\)</span> (in the <span class="math inline">\(i\)</span>-th row and the <span class="math inline">\(j\)</span>-th column) is known as a <em>transition probability</em> <span class="math inline">\(P(X_{n+1} = x_i | X_n = x_j)\)</span>, where <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> are the <span class="math inline">\(i\)</span>-th and the <span class="math inline">\(j\)</span>-th state of the random variable <span class="math inline">\(X_n\)</span>. Then, as we saw above, the probability distribution at time <span class="math inline">\(n\)</span> is given by: <span class="math display">\[
+P_{n+1} = MP_n \; \Longrightarrow P_{n} = M^nP_0
+\]</span> where <span class="math inline">\(P_0\)</span> is initial probability distribution.</p>
+<p>What makes such a stochastic process <em>Markovian</em> is a deep assumption which is implicit in our definition. We assumed that we can calculate the probability distribution of the variable at the next time knowing only the distribution at the present time. More precisely, we assumed that <strong>the conditional probability distribution at time</strong> <span class="math inline">\(n+1\)</span>, given the random variable at time <span class="math inline">\(n\)</span>, is <em>independent</em> of the knowledge of the random variable at time <span class="math inline">\(n-1\)</span> or any previous time.</p>
+<p>This is called the <em>Markov property</em>, and it can be written as follows: <span class="math display">\[
+P(X_{n+1} | X_{n} , X_{m}) = P(X_{n+1} | X_{n}),  \; for \;  m&lt;n
+\]</span></p>
+<section id="properties-of-markov-transition-matrices" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="properties-of-markov-transition-matrices"><span class="header-section-number">5.3.1</span> properties of Markov transition matrices</h3>
+<p>The transition matrices, a.k.a. Markov matrices, have some special properties that help us compute the Markov chain they generate:</p>
+<ul>
+<li>By construction each column of a Markov matrix (with <span class="math inline">\(m\)</span> states) has to add up to 1, because <span class="math display">\[\sum_{i=1}^{m} \pi_{ij} = \sum_{i=1}^{m} P(X_{n+1} = x_i | X_n = x_j) = 1\]</span> since all possible outcomes have to add up to 1.</li>
+<li>Multiplying a probability distribution vector by a Markov matrix preserves the property that all elements add up to 1 (check for yourself that this follows from the first property.)</li>
+<li>The eigenvalues of the Markov matrix are all <span class="math inline">\(|\lambda | &lt;1\)</span>. This is important because to calculate powers of the matrix, we can use the diagonal form <span class="math inline">\(M = U \Lambda U^{-1}\)</span> where <span class="math inline">\(U\)</span> is the matrix of eigenvectors and <span class="math inline">\(\Lambda\)</span> is the matrix of eigenvalues; then <span class="math inline">\(M^n = U \Lambda^n U^{-1}\)</span>. Therefore, each eigenvalue is raised to the <span class="math inline">\(n\)</span>-th power, and given the property above, all the eigenvalues except for <span class="math inline">\(\lambda =1\)</span> will decay. Those eigenvectors with eigenvalue unity are called <em>stationary probability distributions</em>.</li>
+<li>The elements of <span class="math inline">\(M\)</span> are probabilities and therefore are between 0 and 1, inclusively. If all the elements are strictly greater than zero (and thus strictly less than 1), there is only a single eigenvalue equal to 1 and thus only a single equilibrium probability distribution.</li>
+</ul>
+</section>
+<section id="example-hardy-weinberg-equilibrium" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="example-hardy-weinberg-equilibrium"><span class="header-section-number">5.3.2</span> Example: Hardy-Weinberg equilibrium</h3>
+<p>Here is an application of the concept of an equilibrium distribution, known as the Hardy-Weinberg equilibrium. This is a classic population genetics result for the distribution of frequencies of genotypes in a population. We assume that the population consists of randomly mating diploid individuals, and that we are only interested in two alleles of a gene: <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>. For a diploid individual, there are three possible genotypes: <span class="math inline">\(AA\)</span>, <span class="math inline">\(aa\)</span>, and <span class="math inline">\(Aa\)</span> (same as <span class="math inline">\(aA\)</span>). The frequencies of these genotypes in the population are equivalent to the probabilities of a given individual possessing that genotype. Let us call the initial frequencies as follows: <span class="math inline">\(P_0(AA) = p_0\)</span>, <span class="math inline">\(P_0(aa) = q_0\)</span>, <span class="math inline">\(P_0(Aa) = r_0\)</span>.</p>
+<p>The conditional probability of inheriting one <span class="math inline">\(A\)</span> allele given one parent has <span class="math inline">\(AA\)</span> is <span class="math inline">\(P (A | AA) = 1\)</span>, similarly <span class="math inline">\(P(A | aa) = 0\)</span>, and <span class="math inline">\(P(A | Aa) = 1/2\)</span>. Then we can calculate the total probability of inheriting an allele in the next generation is: <span class="math display">\[ P(A) = P (A | AA)p_0 + P(A | aa) q_0 + P(A | Aa) r_0 = p_0 + r_0/2\]</span> <span class="math display">\[ P(a) = P (A | AA)p_0 + P(A | aa) q_0 + P(A | Aa) r_0 = q_0 + r_0/2\]</span> The probability of having the genotype <span class="math inline">\(AA\)</span> is the product of the two probabilities, because of the independence assumption in random mating. Thus we obtain the frequencies of the three genotypes in the next generation: <span class="math display">\[P(AA) = P(A) P(A) = (p_0 + r_0/2)^2 = p_1\]</span> <span class="math display">\[P(aa) = P(a) P(a) = (q_0 + r_0/2)^2 = q_1\]</span> <span class="math display">\[P(Aa) = P(A) P(a) + P(a)P(A) = 2(q_0 + r_0/2)(p_0 + r_0/2) = r_1\]</span></p>
+<p>The transition matrix can be written by assuming the transition probabilities <span class="math inline">\(P(AA | AA) = p + r/2\)</span> (probability of offspring with genotype <span class="math inline">\(AA\)</span>, given that one parent has genotype <span class="math inline">\(AA\)</span>, is the probability of finding allele <span class="math inline">\(A\)</span> in the population). Similarly, <span class="math inline">\(P(aa | aa) = q + r/2\)</span>, <span class="math inline">\(P(Aa | AA) = q + r/2\)</span>, and <span class="math inline">\(P(Aa | aa) = p + r/2\)</span>. Of course, <span class="math inline">\(P(aa | AA ) = P(AA | aa) = 0\)</span>. If the parent is heterozygous, then the conditional probability is <span class="math inline">\(P(AA | Aa) = 1/2( p + r/2)\)</span>, the product of the frequency of the allele <span class="math inline">\(A\)</span> and the probability of <span class="math inline">\(A\)</span> being passed on from the heterozygote (1/2). Similarly, <span class="math inline">\(P(aa | Aa ) = 1/2( q + r/2)\)</span>. Finally, the most complicated transition probability <span class="math inline">\(P(Aa | Aa) = P(A) 1/2 + P(a) 1/2 = p/2 + r/2 + q/2\)</span>. The transition matrix is then: <span class="math display">\[ M = \left(\begin{array}{ccc}p + r/2 &amp; 0 &amp; p/2 + r/4 \\0 &amp; q + r/2 &amp; q/2 + r/4 \\ q + r/2 &amp;  p + r/2 &amp; p/2 + q/2 + r/2\end{array}\right) \]</span></p>
+<p>Here we can find the equilibrium distribution by requiring that <span class="math inline">\(M P_eq = P_eq\)</span>, which is equivalent to the following equations:</p>
+<p><span class="math display">\[ p = p (p + r/2) + r (p/2 + r/4) = (p + r/2)^2\]</span> <span class="math display">\[ q = q(q + r/2) + r (q/2 + r/4) = (q + r/2)^2 \]</span> <span class="math display">\[ r = p(q + r/2) + q(p+r/2) + r (p/2 + q/2 + r/2) = 2(p + r/2)(q + r/2) \]</span> Check that the three frequencies add up to 1, as they are supposed to. Note that these are the same expressions we derived above for the frequency distribution after 1 generation, only now the frequencies <span class="math inline">\(p\)</span>, <span class="math inline">\(q\)</span>, and <span class="math inline">\(r\)</span> are the same on both sides. These are the conditions for the Hardy-Weinberg equilibrium in a randomly mating population with no selection.</p>
+</section>
+<section id="example-models-of-base-substitution-in-dna" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="example-models-of-base-substitution-in-dna"><span class="header-section-number">5.3.3</span> Example: models of base substitution in DNA</h3>
+<p>The following is a summary of the material from Chapter 4 of Allman &amp; Rhodes, <em>Mathematical Models for Biology</em>. Substitution mutations in DNA sequences can be modeled as a Markov process, where each base in the sequence mutates independently of others with a transition matrix <span class="math inline">\(M\)</span>. Let the bases A, G, C, T correspond to states 1 through 4, respectively. One possible model for base substitution from one generation to the next is based on the assumption that all substitution mutations are equally likely, and that the fraction <span class="math inline">\(\alpha\)</span> of the sequence will be substituted each generation. Then the probability of any particular transition, say from T to C is <span class="math inline">\(\alpha/3\)</span>, while the probability of not having a substitution is equal to <span class="math inline">\(1-\alpha\)</span>. This is known as the Jukes-Cantor model and it predicts that the fraction of letters in a sequence at generation <span class="math inline">\(t+1\)</span> depends on the distribution in generation <span class="math inline">\(t\)</span> as follows:</p>
+<p><span class="math display">\[   
+\left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_{t+1}  = \left(\begin{array}{cccc}1-\alpha &amp; \alpha/3 &amp; \alpha/3 &amp; \alpha/3 \\\alpha/3 &amp; 1-\alpha &amp; \alpha/3 &amp; \alpha/3 \\\alpha/3 &amp; \alpha/3 &amp; 1-\alpha &amp; \alpha/3 \\\alpha/3 &amp; \alpha/3 &amp; \alpha/3 &amp; 1-\alpha\end{array}\right) \left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_t
+\]</span> This model is very simple: it only considers substitutions, although other mutations are possible, e.g.&nbsp;insertions and deletions, although they are typically more disruptive and thus more rare, and it treats all substitutions as equally likely, which is not empirically true. The benefit is that the number <span class="math inline">\(\alpha\)</span> is the only parameter in this model, which represents the mutation rate at each site per generation. This makes is easy to compute the eigenvectors and eigenvalues of the model in general. It turns out that the four eigenvectors do not depend on the parameter <span class="math inline">\(\alpha\)</span>, only the eigenvalues do:</p>
+<p><span class="math display">\[  
+\left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) \lambda =1; \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right)\lambda =1-4/3\alpha;  \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right)\lambda =1-4/3\alpha;  \; \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right)\lambda =1-4/3\alpha
+\]</span> Notice two things: first, the first eigenvector is the equilibrium distribution and has the same frequencies for all four bases. Second, the three eigenvectors with eigenvalues smaller than 1 have negative entries, so they cannot be probability distributions themselves (although as linear combinations with the first one, they may be, depending on the coefficients.) A computational sidenote: because the three non-equilbrium eigenvectors share the same eigenvalue, it is possible to choose multiple valid sets of eigenvectors. For instance, MATLAB returns different answers for the eigenvectors above. This is because of non-uniqueness of eigenvectors that share the same eigenvalue (a topic which we have avoided in this course, but is covered in linear algebra textbooks.)</p>
+<p>Computationally, this allows us to predict the time evolution of a distribution of bases in a DNA sequence for any given initial distribution, by using repeated matrix multiplication as above. Figure <span class="math inline">\(\ref{fig:mc_base_sub}\)</span> shows the results starting with a non-equilibrium base distribution for 20 generations, with different substitution rates. It is evident that for a faster substitution rate the approach to the equilibrium distribution is faster. This demonstrates an important role of the second-largest eigenvalue of the Markov matrix: it determines the speed of convergence to the equilibrium distribution (more on this later).</p>
+<p>{#fig-JC-model layout-ncol=2}</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/base_sub_01.png" class="img-fluid figure-img"></p>
+<figcaption><span class="math inline">\(\alpha = 0.1\)</span></figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/base_sub_001.png" class="img-fluid figure-img"></p>
+<figcaption><span class="math inline">\(\alpha = 0.01\)</span></figcaption>
+</figure>
+</div>
+<p>Evolution of base distribution for different substitution rates, with bar graphs showing proportion of letters A, G, T, C from generation 0 to 20 :::</p>
+<section id="calculation-of-phylogenetic-distances" class="level4" data-number="5.3.3.1">
+<h4 data-number="5.3.3.1" class="anchored" data-anchor-id="calculation-of-phylogenetic-distances"><span class="header-section-number">5.3.3.1</span> calculation of phylogenetic distances}</h4>
+<p>As we saw, the Markov model provides a means of measuring the time-dependent evolution of the probability distribution of each letter, starting with some initial distribution. In reality, we would like to answer the following question: given two DNA sequences in the present (e.g.&nbsp;from different species), what is the length of time they spent evolving from a common ancestor?</p>
+<p>To do this, we need to some preliminary work. The first step is to compute the probability that a letter at a particular site remain unchanged after <span class="math inline">\(t\)</span> generations. Because all the nucleotides are equivalent in the Jukes-Cantor model, we need to find <span class="math inline">\(P(X_t = A | X_0 = A)\)</span>. More generally, we can calculate the frequency distribution after <span class="math inline">\(t\)</span> time steps as follows: <span class="math inline">\(P_t = M^t P_0\)</span>. In this case, <span class="math inline">\(P_0 = (1,0,0,0)\)</span>, which can be written as a sum of the four eigenvectors of the matrix <span class="math inline">\(M\)</span>:</p>
+<p><span class="math display">\[
+\left(\begin{array}{c} 1 \\ 0 \\ 0 \\ 0 \end{array}\right) = \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) +  \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right)
+\]</span></p>
+<p>Therefore, the matrix <span class="math inline">\(M^t\)</span> can be applied to each eigenvector separately, and each matrix multiplication is a multiplication by the appropriate eigenvalue. Thus,</p>
+<p><span class="math display">\[
+P_t = M^t P_0 =   1^t \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) + (1-4/3\alpha)^t\left( \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) +  \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) \right)
+\]</span> The first element of <span class="math inline">\(P_t\)</span> is the probability of a nucleotide remaining <span class="math inline">\(A\)</span> after <span class="math inline">\(t\)</span> generation, and it is: $ P_t (A ) = 1/4 +3/4(1-4/3)^t $. For <span class="math inline">\(t=0\)</span>, the probability is 1, as it should be, and as <span class="math inline">\(t \rightarrow \infty\)</span>, <span class="math inline">\(P_t (A) \rightarrow 1/4\)</span>, since this is the equilibrium probability distribution. Note that the expression is the same for all the other letters, so we have found the expression for any nucleotide remaining the same after <span class="math inline">\(t\)</span> generations.</p>
+<p>Now let us get to the question of calculating the time that two sequences have evolved from each other. Denote by <span class="math inline">\(m\)</span> the fraction of sites in two aligned sequences with different letters, and <span class="math inline">\(q\)</span> is the probability of a nucleotide remaining the same, which is the given by the expression for <span class="math inline">\(P_t(A)\)</span>. Thus <span class="math inline">\(m = 1 - q = 3/4 - 3/4(1-4/3\alpha)^t\)</span>. This can be solved for <span class="math inline">\(t\)</span>: <span class="math display">\[
+t = \frac{\log (1 - 4/3 m)}{\log (1 -4/3 \alpha)}
+\]</span></p>
+<p>However, we do not necessarily know the mutation rate <span class="math inline">\(\alpha\)</span>, so this formula is mainly of theoretical interest. Instead, we would like to calculate the <em>phylogenetic distance</em> between the two sequences, which is defined as <span class="math inline">\(d = \alpha t\)</span>, or the mean number of substitutions that occurred per nucleotide during <span class="math inline">\(t\)</span> generations, with mutation rate <span class="math inline">\(\alpha\)</span> (substitutions per nucleotide per generation). Note that this distance is not directly measurable from the fraction of different nucleotides in the two sequences, because it counts all substitutions, including those which reverse an earlier mutation, and cause the sequence to revert to its initial letter.</p>
+<p>Now, let us assume <span class="math inline">\(\alpha\)</span> is small, as typically the number of substitutions per generation per nucleotide is small [reference]. Then, by a Taylor expansion of the logarithm around 1, <span class="math inline">\(\log (1 -4/3 \alpha) \approx - 4/3\alpha\)</span>. Using the formula for <span class="math inline">\(t\)</span> from above with this approximation, we find the Jukes-Cantor phylogenetic distance to be:</p>
+<p><span class="math display">\[
+d_{JC} = \frac{\log (1 - 4/3 m)}{ -4/3 \alpha} \alpha =  -\frac{3}{4}\log (1 - 4/3 m)
+\]</span> This formula has the correct behavior in the two limits: when <span class="math inline">\(m = 0\)</span>, <span class="math inline">\(d_{JC} = 0\)</span> (identical sequences have zero distance), and when <span class="math inline">\(m \rightarrow 3/4\)</span>, <span class="math inline">\(d_{JC} \rightarrow \infty\)</span>, since 3/4 is the maximum possible fraction of differences under the Jukes-Cantor model. Thus, we have obtained an analytic formula for the phylogenetic distance based on a Markov chain model of substitutions.</p>
+</section>
+</section>
+<section id="kimura-model" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="kimura-model"><span class="header-section-number">5.3.4</span> Kimura model</h3>
+<p>One can devise more sophisticated models of base substitution. There are two classes of nucleotide bases: purines (A,G) and pyrimidines (C,T). One may consider the difference in rates of <em>transitions</em> (substitutions within the classes) and <em>transversions</em> (subtitutions of purines by pyrimidines and vice versa). This is known as the Kimura model and can be written as follows as Markov chain:</p>
+<p><span class="math display">\[   
+\left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_{t+1}  = \left(\begin{array}{cccc}1-\beta-\gamma &amp; \beta &amp; \gamma/2 &amp;  \gamma/2 \\ \beta  &amp; 1-\beta-\gamma &amp; \gamma/2 &amp; \gamma/2 \\ \gamma/2 &amp; \gamma/2 &amp; 1-\beta-\gamma&amp; \beta  \\ \gamma/2 &amp;\gamma/2 &amp; \beta  &amp; 1-\beta-\gamma \end{array}\right) \left(\begin{array}{c} P_A \\ P_G \\ P_C \\ P_T \end{array}\right)_t
+\]</span></p>
+<p>where <span class="math inline">\(\beta\)</span> is the rate of transitions and <span class="math inline">\(\gamma\)</span> is the rate of transversions per generation. This model has two different parameters, and as those two rates are empirically different (transitions occur more frequently, since the bases are more chemically similar,) the model is more realistic. Whether or not it is worth the additional complexity depends on the question at hand.</p>
+</section>
+<section id="example-genetic-drift-as-bernoulli-trials" class="level3" data-number="5.3.5">
+<h3 data-number="5.3.5" class="anchored" data-anchor-id="example-genetic-drift-as-bernoulli-trials"><span class="header-section-number">5.3.5</span> Example: genetic drift as Bernoulli trials</h3>
+<p>Now we come to another model of genetic variation in a population. Consider a population of <span class="math inline">\(N\)</span> haploid individuals with two genotypes <span class="math inline">\(A\)</span> and <span class="math inline">\(a\)</span>. Suppose that there are <span class="math inline">\(k\)</span> individuals with allele <span class="math inline">\(A\)</span> (and therefore <span class="math inline">\(N-k\)</span> individuals with allele <span class="math inline">\(a\)</span>). Let the population stay constant at <span class="math inline">\(N\)</span>, and assume that each individual has an equal chance of passing on its allele to the next generation. It follows that any given offspring inherits the allele <span class="math inline">\(A\)</span> with probability <span class="math inline">\(p = k/N\)</span>, and inherits allele <span class="math inline">\(a\)</span> with probability <span class="math inline">\(1-p = (N-k)/N\)</span>. Then generating the next generation of <span class="math inline">\(N\)</span> individuals is equivalent to <span class="math inline">\(N\)</span> Bernoulli trials (coin tosses) with those probabilities. Let the random variable <span class="math inline">\(X_t\)</span> stand for the number of individuals with allele <span class="math inline">\(A\)</span> in generation <span class="math inline">\(t\)</span>. Then</p>
+<p><span class="math display">\[
+P(X_{t+1} = j | X_t = k) = C^N_j p^j (1-p)^{N-j} = \frac{N!}{j! (N-j)!} \left(\frac{N}{k}\right)^j \left(\frac{N-k}{k}\right)^{N-j}
+\]</span></p>
+<p>This defines the transition probabilities of an <span class="math inline">\(N\)</span>-state Markov chain. The probabilities of having <span class="math inline">\(j\)</span> individuals with allele <span class="math inline">\(A\)</span> can be computed solely from the probability distribution in the previous generation. These transition probabilities are dependent only on the values of respective states <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, and the population size <span class="math inline">\(N\)</span>, so the transition matrix is constant through the generations.</p>
+<p>Note that there are two states from which there is no escape: <span class="math inline">\(X_t = 0\)</span> (all <span class="math inline">\(a\)</span>) and <span class="math inline">\(X_t = N\)</span> (all <span class="math inline">\(A\)</span>). Since we did not account for mutation, if a population randomly drifts to either of the two states, it will remain there. This is known as <em>fixation</em> of the allele <span class="math inline">\(a\)</span> or <span class="math inline">\(A\)</span> in the population.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./optimization_MC.html" class="pagination-link  aria-label=" &lt;span="" optimization="" problems:="" monte="" carlo="" search&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,359 @@
+\documentclass[11pt]{book}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+
+\oddsidemargin 0in
+\evensidemargin 0in
+\textwidth 6.5in
+%\headheight 1.0in
+\topmargin 0in
+
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                       \if@mainmatter
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+                         \addcontentsline{toc}{chapter}%
+                                   {\protect\numberline{\thechapter}#2}%
+                       \else
+                         \addcontentsline{toc}{chapter}{#2}%
+                       \fi
+                    \else
+                      \addcontentsline{toc}{chapter}{#2}%
+                    \fi
+                    \chaptermark{#1}%
+                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{#2}]%
+                    \else
+                      \@makechapterhead{#2}%
+                      \@afterheading
+                    \fi}
+                      % Activate to display a given date or no date
+ \usepackage[colorlinks,urlcolor=blue]{hyperref}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{mosdef}{Definition}[chapter]
+\bibliographystyle{cell}   
+
+\begin{document}
+\setcounter{chapter}{5}
+\chapter[Applications of Markov models]{Applications of Markov models: MCMC and HMM}
+
+\section{Classification of Markov states}
+We saw in the last example on genetic drift that Markov states can be qualitatively different. Once the variable reaches the states of $A$ or all $a$, it stays there for ever. Such states are called \emph{recurrent}. On the other hand, all the other states are \emph{transient}, because the variable will not return to those states forever. 
+
+\subsection{Definitions of classes}
+In the following definitions, we deal with a finite-state, discrete-time Markov chain, with random variable $X_t$ taking on states denoted by $i$, and transition probabilities from state $i$ to $j$ denoted by $\pi_{ji}$.
+
+\textbf{Definition:} A state $j$ is said to be \emph{accessible} from state $i$ if $\pi_{ji}^k > 0$ for some $k > 0$. Here $\pi_{ji}^k $ means the $j,i$-th element of the $k$-th power of the transition matrix, $M^k$, not the transition probability raised to the $k$-th power. This means that it is possible to reach state $j$ from state $i$ after some finite number of steps. 
+
+\textbf{Definition:} Two states $i$ and $j$ \emph{communicate} with each other, if $i$ is accessible from $j$ and $j$ is accessible from $i$. Let's denote this by $i \leftrightarrow j$. It can be shown that states that communicate form a \emph{class}, because the relation satisfies the mathematical properties of a class:
+\begin{enumerate}
+
+\item (Self-relation) Any state $i$ communicates with itself (obviously)
+\item (Commutativity) If $i \leftrightarrow j$, then $j \leftrightarrow i$ (also obvious by definition)
+\item (Transitivity) If $i \leftrightarrow j$ and $j \leftrightarrow k$, then $i \leftrightarrow k$. This requires a little work to prove:
+
+\end{enumerate}
+
+\textbf{Definition:} A Markov chain is \emph{irreducible} is all its states belong to one class, that is, if all states communicate.
+
+\textbf{Definition:} Let $f_i$ be the probability that, given that  $X_0 = i$ , the random variable $X_t$ will return to $i$ at some time $t > 0$. Then a state $i$ is called \emph{recurrent} if $f_i =1 $, and is called \emph{transient} if $f_i  < 1$.
+
+\subsection{Example}
+What are the classes in the Markov chain defined by the following transition matrix, and is it irreducible?
+$$M = \left(\begin{array}{cccc}1/2 & 1/2 & 1/4 & 0 \\ 1/2 & 1/2 & 1/4 & 0 \\ 0 & 0 & 1/4 & 0 \\ 0 & 0 & 1/4 & 1\end{array}\right)$$
+By inspection of the matrix, it is clear that states 1 and 2 communicate with each other, but not with states 3 or 4. State 3 communicates only with itself states 1 and 2 are accessible from 3, but not the reverse), and the same goes for state 4. Thus, there are 3 classes of states in this Markov chain: $\{1, 2\}$, $\{3\}$, and $\{4\}$, and it is not irreducible.
+
+Recurrent states have some special properties. First, since the process is guaranteed to return to the same state in finite time, once it has returned, it is guaranteed to to return again, and again. Therefore, the expected number of returns to a recurrent state is infinite, while for a transient state it is finite.
+
+\section{condition for convergence to a unique stationary distribution}
+We have seen how to find stationary distributions from the definition. We saw two-state and four-state models that converge to the stationary distributions that were predicted. But just because there is a stationary distribution, does not mean that the model will converge to it! Here is a very simple example: a two-state model where transitions between the two states both have probability 1. Here is its transition matrix:
+$$ M = \left(\begin{array}{cc}0  & 1 \\ 1& 0\end{array}\right)$$
+It is clear that the vector $P_s = (0.5, 0.5)$ is a stationary distribution. However, if we start with an initial distribution that is different $P_s$, the distribution does not converge to any stationary vector. For instance, if the initial distribution is all in state 1, the distribution vector will keep flipping between $(1,0)$ and $(0,1)$ forever.
+
+All Markov models have at least one stationary distribution, but there could be multiple ones. Here is another simple example with two states where the transition probabilities are exactly zero:
+$$ M = \left(\begin{array}{cc} 1  & 0 \\  0 & 1 \end{array}\right)$$
+You can check for yourself that both vectors $(1,0)$ and $(0,1)$ satisfy the definition of stationary distribution. In fact, any vector is stationary, since nothing can leave either state, so there are infinitely many stationary distributions of this very boring model.
+
+So can we avoid the weirdness of either cycling around endlessly, like in the first example, or having multiple stationary distributions? We first need to define a new concept of \emph{communication} between states in order to express the condition for a unique stationary distribution.
+\begin{mosdef}
+Two states $i$ and $j$ \emph{communicate} with each other if there is nonzero probability of transition from $i$ to $j$ after some number of time steps, and the same for probability of transition from $j$ to $i$.
+\end{mosdef}
+Determining whether two states communicate with each other can be done by checking the flow diagram of the model. As long as there is a path from state $i$ to state $j$ using nonzero probability transitions, and vice versa, the two states communicate.
+
+There is a condition on the transition probabilities that guarantees that there is only one stationary distribution and that all initial distributions converge to it. This is a simplified version of it:
+\begin{theorem}
+A Markov model in which all states communicate with each other, and all the probabilities of remaining in a state $i$ are $0<p_{ii}<1$ (which is called a \emph{regular} Markov model) has a unique stationary distribution and all initial distributions converge to it.
+\end{theorem}
+
+
+\section{Example: gambler's ruin}
+Consider this classic probability problem: a gambler starts out with $i$ dollars, and plays a series of games, in which she either wins a dollar with probability $p$, or loses a dollar with probability $q = 1-p$. There are $N$ total dollars in the game, so the game continues until either all the money is won by the player, or until the player loses all the money. Note that there are three classes of states: $\{0\}$, $\{N\}$, and $\{1,2,..., N-1\}$. The question is, what is the probability of winning $N$ dollars, starting with $i$ dollars?
+
+Let $\pi_i$ be this probability. Let us write this probability of winning, conditioned on the results of the first game $Y$.  There is a win with probability $p$, and now winning probability is $\pi_{i+1}$, and 
+$$ \pi_i = P_{i+1}(win | Y = win) p + P_{i-1}(win | Y = loss) q = p \pi_{i+1} + q \pi_{i-1}$$
+Since $p+q=1$, we can re-write the left-hand side as $(p+q) \pi_i $. Then the expression yields the following relation for differences of successive winning probability:
+$$ \pi_{i+1} -  \pi_i = \frac{q}{p} (\pi_i -  \pi_{i-1} )$$
+Because $\pi_0 = 0$, the first difference is $ \pi_{2} -  \pi_1 = \frac{q}{p} \pi_1$. Applying the recursive relation, we get $\pi_3 -  \pi_2 = \left( \frac{q}{p}\right)^2 \pi_1$, and in general
+$ \pi_i-  \pi_{i-1} = \left( \frac{q}{p}\right)^{i-1} \pi_1$. By adding up all the expressions up to the last one, the sums telescopes on the left-hand side, and we get a geometric series on the right:
+$$  \pi_i -  \pi_1 = \sum_{k=1}^{i-1} \left( \frac{q}{p}\right)^{k} \pi_1 \Rightarrow \pi_i =  \pi_1 \sum_{k=0}^{i-1} \left( \frac{q}{p}\right)^{k} = \pi_1\frac{1 - \left(\frac{q}{p}\right)^i }{1 -  \frac{q}{p}}
+\; \mathrm {if} \; p \neq q \; ; \pi_i = \pi_1 i \; \mathrm{if} \; p = q
+$$
+Notice that the geometric series formula does not apply if $p=q$, but it is easy to calculate a sum of $i$ 1s. However, the expressions still contain an unknown quantity in $\pi_1$. We can find it by using the above formula for the state $N$:
+$$ 1 = \pi_N = \pi_1\frac{1 - \left( \frac{q}{p}\right)^N }{1 -  \frac{q}{p}}  \Rightarrow \pi_1 = \frac{1 -\frac{q}{p}}{1 -  \left(\frac{q}{p}\right)^N} \; \mathrm{if} \; p \neq q \; ; 1 = \pi_1 N \Rightarrow  \pi_1 = \frac{1}{N} \; \mathrm{if} \; p = q$$
+Plugging this into the above expression, we obtain the analytic solution for the probability of winning:
+$$  \pi_i =   \frac{1 - \left( \frac{q}{p}\right)^i }{1 -  \left(\frac{q}{p}\right)^N} \; \mathrm{if} \; p \neq q \; ;  \pi_i = \frac{i}{N} \; \mathrm{if} \; p = q $$
+
+This has some instructive consequences. First, obviously, the larger the initial amount of money $i$, the larger the probability of winning. If the game is fair ($p=q=1/2$) then the probability is just the ratio of the initial amount to the total amount of money in the game.
+
+There is also the dependence of the probability of winning on the total amount of money $N$.  If $p > 1/2$, then $q/p < 1$, and $ (q/p)^N \rightarrow 0$ as $N  \rightarrow \infty$.
+However, if $ p < 1/2$, $q/p >1$ and $ (q/p)^N \rightarrow \infty$ as $N  \rightarrow \infty$. Thus, we have the following limiting solution for the probability of winning when playing in  a game with a large  amount of money:
+$$ \lim _{N \rightarrow \infty } \pi_i  = 1 - \left(\frac{q}{p}\right)^i \; \mathrm{if} \; p > 1/2 ; \;  \lim _{N \rightarrow \infty } \pi_i  = 0 \; \mathrm{if} \; p \leq 1/2$$ 
+It should be clear than the probability of winning goes to zero in the case of the fair game $p=1/2$. This shows that when playing a game against an opponent with very deep pockets, the gambler will almost certainly lose if the game is fair or worse. The odds are much better if one stops playing after winning some modest amount $N$.
+
+We can also calculate the expected payoff from playing the game until either losing it all or winning $N$ dollars. Starting with $i$ dollars, winning the game results in a gain of $N-i$ dollars, and losing it all means losing $i$ dollars. Then the expected payoff $G$ is:
+$$ E[G] =  (N-i)\pi_i - i(1-\pi_i) = N\pi_i - i  $$
+
+\section{Residence times}
+It is often important to know how much time the system is expected to spend in each state of the Markov process, which is called the \emph{residence time} for any given state. We will see later how this allows us to calculate the kinetics of ion channel gating. Remember that we are still dealing with a finite-state and discrete-time Markov process, so the total amount of time spent in a state is found by counting the number timesteps, or cycles, that the random variable equals that state.
+
+The concept of residence time makes sense only for transient states, since the expected time spent in a recurrent state is either 0 or infinity. We will thus only consider the subset of $M$ transient states. To find the residence time for a transient state $j$, given that initially the system is in state $i$, let us apply the conditional probability trick once again, by conditioning on the result of the first transition:
+$$S_{ji} = \delta_{ji} +  \sum_{k=1}^M \pi_{ki} S_{kj}$$
+Several new things in the notation: $\delta_{ij} = 1$ if $i=j$ and 0 if $i \neq j$. It is an auxiliary function serves to add one to the total residence time if $i=j$ in the expression, that is if the system starts out in the state of interest $j$. Then after the first time step, we add up the transition probabilities from the initial state $i$ to all possible transient states $k$, multiplied by the mean residence time in the state interest $j$, starting with a transient state $k$.
+
+We have defined a relationship between the different residence times, which can be expressed in matrix form. Let $S$ be the matrix of mean residence times for the transient states ($M$ by $M$), with elements $S_{ij}$ located in the $i$-th row and $j$-th column. Then the equation above can be written as follows:
+$$  S = I + M_{T} S \Rightarrow S(I -M_T) = I  \Rightarrow S = (I - M_T )^{-1} $$
+where $I$ is the identity matrix, with 1s on the diagonal and 0s everywhere else.
+
+\subsection{Example: residence times in gambler's ruin model }
+Let us go back to the gambler's ruin problem, which more generally is a random walk with two absorbing boundaries. The transition matrix for this Markov chain with probability of stepping to the right of $p$, and stepping to the left is $ q = 1 -p$ is, in general:
+$$ M =  \left(\begin{array}{ccccccc}1 & q & 0 & ... & ... & 0 & 0 \\0 & 0 & q & ... & ... & ... & 0 \\0 & p & 0 & ... & ... & ... & ... \\... & 0 & p & ... & q & 0 & ... \\... & ... & ... & ... & 0 & q & 0 \\0 & ... & ... & ... & p & 0 & 0 \\0 & 0 & ... & ... & 0 & p & 1\end{array}\right)  $$
+We would like to know the average residence times in each transient state ($i=1,2,.., N-1$). This Markov chain contains both transient and recurrent states, so we need to restrict the matrix to only the transient states:
+$$ M_T =  \left(\begin{array}{ccccc} 0 & q & ... & ... & 0 \\ p & 0 & ... & ... & ... \\ 0 & p & ... & q & 0 \\ ... & ... & ... & 0 & q \\ 0 & ... & ... & p & 0 \end{array}\right)  $$
+
+Let us take as a simple example a random walk with three transient states, and with probability of winning (stepping right) of $p=0.6$. Then the transient matrix is:
+$$ M_T =  \left(\begin{array}{ccc} 0 & 0.4 &  0 \\ 0.6 & 0 & 0.4 \\ 0 & 0.6 & 0 \end{array}\right)  \Rightarrow S = (I - M_T)^{-1} = \left(\begin{array}{ccc}1.46 & 0.77 & 0.31 \\1.15 & 1.92 & 0.77 \\0.69 & 1.15 & 1.46\end{array}\right)$$
+
+
+\section{Application: ion channel model}
+Let us consider an ion channel which exists in two different states: open (O) and closed (C). We are measuring the state of the channel with time resolution $\Delta t$, and the probability of transition from open to closed, which we will call the probability of closing $P_C$, while the probability of transition from closed we call the opening probability $P_{O}$. Then the transition probability matrix for this Markov chain is:
+$$ M =  \left(\begin{array}{cc} 1-P_C & P_O \\ P_C & 1-P_O  \end{array}\right) $$
+
+
+First, let us find the equilibrium distribution for this Markov chain. It is easy to see that the distribution $(P_o/(P_o + P_c), P_c/(P_o + P_c))$ remains unchanged by the transition matrix:
+$$  \left(\begin{array}{cc} 1-P_C & P_O \\ P_C & 1-P_O  \end{array}\right)  \left(\begin{array}{c} \frac{P_O}{P_O+P_C} \\  \frac{P_C}{P_O+P_C} \end{array}\right)  =  \left(\begin{array}{c} \frac{P_O - P_OP_C + P_OP_C}{P_O+P_C} \\  \frac{P_OP_C + P_C -P_CP_C}{P_O+P_C} \end{array}\right) =   \left(\begin{array}{c} \frac{P_O}{P_O+P_C} \\  \frac{P_C}{P_O+P_C} \end{array}\right) $$
+Here the first state is open, and the second is closed, so the probability of being in the open state is proportional to the opening transition probability, and the same for the closed state.
+
+Suppose we want to know the time-dependent behavior of the channel, that is how long does it wait, on average, between opening and closing events? This question is similar to the residence time, except we now are interested in the wait before a single transition, rather than the total time spent in a state. Since both states in the process are recurrent, one way to answer this question is to remove one state and then treat the remaining state as transient. Then our transient matrix is reduced to a scalar: $M_T = 1-P_C$ for the open state, and $M_T = 1 - P_O$ for the closed state. Applying the formula for mean residence time from above, we find that $S_O = (1 - 1 - P_C)^{-1} = 1/P_C$ and $S_C = (1 - 1 - P_O)^{-1} = 1/P_O$. Thus, the mean \emph{dwell time} for the open state is the inverse of the closing probability, and analogously for the closed state.
+
+\subsection{Relationship between probabilities and rates}
+This is actually the dwell time as counted in the number of Markov cycles. The probabilities are dimensionless constants, but they have a direct relationship to the microscopic rate constants employed by biochemists. If the time step is small enough, then the ion channel is unlikely to make more than one transition during the time $\Delta t$. The microscopic rate constants are then related to the probabilities like this (check that the units make sense): $k_c = P_C / \Delta t$, and $k_o = P_O /\Delta t$. Thus, the mean dwell time can be written in the actual units of time as $S_O = \Delta t /P_O = 1/k_o$; $S_C = \Delta t /P_C = 1/k_c$.
+
+The transitions between states can then be written in chemical notation as follows:
+$$ O  {\textstyle \overset{k_c}{\underset{k_{o}}{\rightleftharpoons}}}  C$$ 
+This reaction can be described by the usual chemical kinetic differential equations that we analyzed in the first quarter, with $O$ and $C$ denoting the numbers (or fractions) of channels in the open and closed states, respectively:
+\begin{eqnarray*}
+\dot O & = & -k_c O + k_o C \\
+\dot C & = & k_c C - k_o C 
+\end{eqnarray*}
+
+\section{Branching processes}
+A special, and highly useful class of Markov processes are called \emph{branching processes}. One way to define them is to describe each value of the random variable $X_t$ as the size of a population of independently proliferating individuals. Each one can produce $i$ offspring (with $i$ a nonnegative integer) with probability $P_i$, which has to be specified.
+
+The random variable $X_t$ can take on integer values $0, 1, 2, 3, ...$. If we define another random variable as the number of offspring for each individual $k$ in the generation $t-1$ to be $Z_k$, we can write the population size as:
+$$ X_{t} = \sum_{k=1}^{X_{t-1}} Z_k$$
+
+\subsection{Limiting behavior}
+What happens to the population in the long run? First, note that the state $\{0\}$ (extinction) is recurrent, since it is absorbing. The rest of the states are transient, which can be clearly shown by the following argument:
+
+The probability of never returning to state $j$ is at least as great as the probability of reaching $\{0\}$, which in turn is greater than the probability of becoming extinct in one step. The probability of $j$ \underline{independent} individuals becoming extinct in one generation is the product of individual probabilities of producing zero offspring, or $P_0^k$. Thus, probability of never returning to state $k$ is at least $P_0^k$, so as long as $P_0 > 0$, there is a finite probability of never returning to the state $k$, therefore it is transient (since the probability of ever returning is less than 1).
+
+The fact that all nonzero states are transient implies that any finite subset of the states $\{ 1, 2, 3, ... , n\}$ can only be visited a finite number of times. Therefore, no matter how large $n$ is, the population will eventually either reach $0$ (extinction) or reach beyond any finite $n$ (go to infinity). This is one indication that the branching processes is the stochastic equivalent of deterministic exponential growth in discrete time.
+
+\subsection{Mean population size}
+Suppose the mean number of offspring per individual is $\mu$, defined as follows:
+$$ \mu = \sum_j j P_j$$
+$\mu$ can be calculated from the given probability mass function $\{ P_j \}$. Then, let us write down the expected value of the population, as a conditional expectation, and use the auxiliary random variable $Z_k$ from above:
+$$ E[X_t] = E [ E[ X_t | X_{t-1}] ] = E [ E \left[ \sum_{k=1}^{X_{t-1}} Z_k | X_{t-1}\right]] = E [  \sum_{k=1}^{X_{t-1}} \mu] = E [ X_{t-1} \mu]  = \mu  E [ X_{t-1}]$$
+The trick in the middle of making $\mu$ appear is because the expectation of $Z_k$ is the mean reproductive number $\mu$, regardless of which individual it is.
+Thus, the general formula for the mean population size of generation $t$ is $E[X_t] = \mu^t X_0$. This should look very familiar, and it turns out that the behavior of the mean value of a branching process is governed by the deterministic exponential growth equation $\bar X_{t+1} = \mu \bar X_t$.
+
+\subsection{Examples}
+Branching processes were introduced by Galton in the 19th century for the study of a pressing problem for British aristocracy: how likely it is that a family name will die out, due to the absence of male heirs in a generation? Here, the random variable $X_t$ represents the number of males with a common family name of the same generation (however it is defined). The probabilities $P_0$, $P_1$, etc. are the probabilities of producing none, or one, etc. male offspring. According to Feller, reasonable demographic approximations, based on some data for U.S. (from long ago) are $P_0 \approx 0.48$, and $P_k \approx  0.21 * 0.59^{k-1}$ for all the other numbers of male offspring.
+
+Branching process was used by Kimmel and Axelrod to model the growth of a colony of cells with three states: proliferating, quiescent, and dead. The probabilities of a proliferating cell transitioning to these three states in the next generation are $P_2$, $P_1$, and $P_0$, respectively. In order to describe the proliferation of these cells, one needs to use a probability generating function framework (which i will avoid for now). However, to get an idea of the authors' approach, let us define random variables $Z_t$ - the number of proliferating cells in generation $t$, and $Q_t$, the number of quiescent cells in generation $t$. Assume that a quiescent cell remains in that state for the duration of the model. Define the following auxiliary random variables: $Y_k^{(t+1)}$ is the number of descendants of the $k-th$ individual in the first generation that are proliferating cells in generation $t+1$. Similarly, let $W_k^{(t+1)}$ be the number of descendants  of the $k-th$ individual in the first generation that are quiescent cells in generation $t+1$. These definitions allow the following calculations:
+$$ Z_{t+1} = \sum_{j=1}^{Z_1} Y_k^{(t+1)} ; \; Q_{t+1} = \sum_{j=1}^{Z_1} Q_k^{(t+1)} + Q_1$$
+
+\subsection{Extinction probability}
+An important question that can be addressed by branching process modeling is the probability of extinction of the population. We specifically define the extinction probability, starting from a single individual, to be:
+$$\pi_0  = \lim_{t \rightarrow \infty} P (X_t = 0 | X_1 = 1)$$
+
+The extinction probability clearly depends on the mean reproduction value $\mu$. If $\mu < 1$, we can show that the population is certain to eventually go extinct:
+$$ \mu^t = E[X_t]  = \sum_{j=1}^\infty j P(X_t = j)  \geq \sum_{j=1}^\infty P(X_t = j) = P (X_t \geq 1) $$
+The probability $P (X_t \geq 1)$ is the probability of survival. Since we have shown this to be bounded from above by $\mu^t$, when $\mu < 1$, the probability of survival goes to 0, and the probability of extinction is 1. (It can also be shown that the probability of extinction is 1 if $\mu =1$.)
+
+Now, consider the probability of extinction if $\mu > 1$. Then extinction is not certain, and there is a very clever method of calculating $\pi_0$. Let us write the probability of extinction as a conditional probability on the value of $X_1$: $ \pi_0 = \sum_{j=0}^\infty P (ext | X_1 = j) P_j$. By independence, the probability of extinction, given that there are $j$ individuals, is actually the product of the probabilities of extinction of each individual, so $ P (ext | X_1 = j) = \pi_0^j$. Therefore, we obtain the following equation for $\pi_0$:
+$$ \pi_0 = \sum_{j=0}^\infty \pi_0^j  P_j$$
+The smallest positive root of this polynomial (if there are finitely many terms) is the survival probability. 
+
+\textbf{Example:} Let $P_0 = 1/4, P_1 = 1/4, P_2 = 1/2$. Then the equation for $\pi_0$ is given by:
+$$ \pi_0 = 1/4 + 1/4 \pi_0 + 1/2 \pi_0^2 \Rightarrow 1 - 3 \pi_0 + 2\pi_0^2 = 0$$
+The solutions of this quadratic equation are $\pi_0 = 1, 1/2$. The smallest positive solution is 1/2, which is the extinction probability for a population starting with a single individual.
+
+\section{Markov Chain Monte Carlo}
+
+\subsection{Reversible Markov chains}
+
+Consider a Markov chain of random variables, after a sufficient number of iterations, when the probability distribution has reached its equilibrium $\pi_eq$.
+The sequence of random variables $X_n, X_{n+1}, ... , ... X_{k}$ can be shown to be a Markov chain:\\
+\textbf{Proof:} The goal is to show that $P(X_ m | X_{m+1}, X_{m+2}, ... ) = P(X_ m | X_{m+1})$. We know that \\
+$P(X_ {m+2}, X_{m+3}, ... | X_{m+1}, X_{m}, ... ) = P(X_ {m+2}, X_{m+3}, ... | X_{m+1})$, that is, the future states $X_{m+2}, X_{m+3}, ...$ are independent of the past state $X_{m}$. But independence is symmetric, therefore $X_{m}$ is also independent of the future states, and we have $P(X_ m | X_{m+1}, X_{m+2}, ... ) = P(X_ m | X_{m+1})$, as we wanted.
+
+
+The reversed Markov chain has different transition probabilities:
+$$ Q_{ij} = P(X_m = i | X_{m+1} = j) = \frac{P(X_m = i, X_{m+1} = j)}{P(X_{m+1} = j)} = \frac{P(X_{m} = i) P(X_{m+1} = j | X_{m} = i))}{P(X_{m+1} = j)} $$
+
+Since the  Markov chain is equilibrated, the probabilities are found in the equilibrium distribution$\pi_{eq}$. We thus get the following formula for the time-reversed Markov transition probabilities:
+$$ Q_{ij} = \frac{\pi_i P_{ji}}{\pi_j} $$
+Note that the indices are (as always) reversed from those in Ross's textbook.
+
+If a Markov chain is the same forward and backward in time, it has the same transition probabilities $P_{ij} = Q_{ij}$, which implies the following condition:
+$$ \pi_i P_{ji} = \pi_j P_{ji}$$
+Such a Markov chain is known as \emph{time reversible.} The expression above is known in many fields as the \emph{detailed balance} condition. It has a simple interpretation, that the ``rate of flow'' of probability from state $i$ to state $j$ ( $\pi_j P_{ji}$) is precisely balanced by the ``rate of flow'' in the opposite direction ( $\pi_i P_{ij}$). 
+
+\subsection{Using Monte Carlo for Markov chain calculations}
+
+It is often difficult to calculate the statistical properties of a Markov chain, for instance, the expectation of some function of the Markovian random variable $X$:
+$$ E[f(X)] = \sum_{j=1}^\infty f(x_j) P(X = x_j)$$
+
+The approach is to use a simulation to produce a set of values of the random variables (called a sample) $X_1, X_2, ..., X_N$, which satisfy the mass function $P(X = x_j)$. There is a fundamental result, called the Law of Large numbers, that says that the arithmetic mean of the function of the random variables actually approaches the expectation:
+$$ E[f(X)] = \lim_{N \rightarrow \infty}  \sum_{i=1}^N \frac{f(X_i)}{N} $$
+
+The motivation for Monte Carlo simulations is to produce a sequence of random variables that adequately sample a (supposedly complicated) given probability distribution function. We had seen these simulations in the context of optimization, where the sampling was used to identify the maxima or minima of a given objective function. The idea is to start with a given value Markov Chain Monte Carlo takes a specified objective function (probability distribution function) and generates a sample, using a Markov chain of random variables satisfying the given probability distribution. The random variable may be discrete or continuous valued.
+
+\subsection{Metropolis-Hastings algorithm}
+The most famous Monte Carlo approach is the Metropolis algorithm, developed in the 1950s at Los Alamos, which was later generalized by Hastings. It involves generating a candidate value of the random variable, and accepting or rejecting it according to a formula that generates a sequence of random variables drawn from the desired probability distribution function.
+
+As a typical situation we are given the equilibrium weights $b_j$ for each state $j$ of the random variable $X$. They are not actually probabilities, because they do not add up to 1. If we could find the total sum $B = \sum_j b_j$, we could specify the \emph{target probability distribution} $\pi_j = b_j /B$. We will show that the Metropolis algorithm can generate a sample from the target distribution without computing the normalization constant $B$.
+
+Suppose $q_{ij} = q(X_{t+1} = j | X_t = i)$ are the transition probabilities of the \emph{proposal distribution}. We want to accept or reject a proposed new state, with probability that preserves the required probability distribution $\pi$. Let the acceptance probability from state $i$ to state $j$ be $\alpha_{ij}$. Then it must specify the following conditions:
+$$ p_{ij} = q_{ij}\alpha_{ij}; \; p_{ii} = q_{ii} + \sum_{k \neq i} q_{ik}(1-\alpha_{ik})$$
+
+We require that the Markov chain be time reversible, since we are trying to generate a sample for calculations, and the order of generating the random variables has no significance:
+$$ \pi_i p_{ij} = \pi_j p_{ji} \Rightarrow \pi_i q_{ij}\alpha_{ij} = \pi_j q_{ji}\alpha_{ji}$$
+This condition is satisfied by the following expression for $\alpha$ (check by substitution the value for $\alpha_{ij}$ and $\alpha_{ji}$, bearing in mind that one of them has to be 1, since they are reciprocals of each other.)
+$$ \alpha_{ij} = \min \left( \frac{\pi_j q_{ji}}{\pi_i q_{ij}}, 1\right) = \min \left( \frac{b_j q_{ji}}{b_i q_{ij}}, 1\right)$$
+
+There are two common approaches to generating a proposal distribution: random walks and independent chains. Random walk usually means choosing a new  value $X_{t+1} = X_t + Z$, where $Z$ is another random variable. Idependent chain means the proposal distribution is independent of the current position.
+
+Any proposal distribution may be used, but the core of the algorithm is the decision of accepting or rejecting the new proposed state: \\
+\textbf{Metropolis-Hastings Algorithm}
+\begin{enumerate}
+\item  Initialize the chain to $X_0$ and set $t=0$
+
+\item Generate a candidate point $Y$ using $q_{ij} = P(X_{t+1} = i |X_t = j)$
+
+\item Generate $u$ from a uniform  distribution on $(0,1)$
+
+\item If $ u \leq  \min \left( 1,  \frac{b_j q_{ji}}{b_i q_{ij}} \right) $
+then set $X_{t+1} = Y$, else set $X_{t+1} = X_t$
+
+\item Set $t= t+1$ and repeat Steps 2 through 5   
+
+\end{enumerate}
+
+\section{Computational issues for Monte Carlo simulations} 
+\begin{itemize} 
+\item Burn-in time: how long does it take to forget the starting point? There is no general answer to this, and therefore no guarantee that you have
+run the simulation long enough.
+
+\item Mixing: How well does the simulation cover all parts of state space? This certainly depends on the proposal distribution, but again, there is no
+simple way of picking the right one.
+
+\item Efficiency: in extemely high-dimensional cases, one might want to restrict the scope of the Monte Carlo simulation instead of trying to 
+cover all of state space, which is often intractable.
+
+\item Dynamics: Monte Carlo may give nice histograms, but it will not tell you how the system can physically move between the states. In other words, 
+the sequence of states produced by Monte Carlo should not be confused with a time series.
+\end{itemize}
+
+\section{Gibbs Sampler}
+The following algorithm applies to a multivariate probability distribution,
+and is especially useful in image processing and other high-dimensional
+applications, where there is no single convenient variable that defines the probability of a state. 
+
+\begin{enumerate}
+\item Pick $y_0$ and choose $x_0$ from the conditional distribution $p(x | y=y_0)$ 
+
+\item Choose $y_1$ from $p(y | x=x_0)$ and $x_1$ from $p(x | y=y_1)$.
+
+\item Repeat $N$ times  
+\end{enumerate}
+
+\textbf{Example:} We want to model a two-letter sequence of nucleotides with specified target probability mass function, which is defined as the probability of a particular transition from, e.g. the second letter in the sequence being A to the first letter being G.  We call $X_1$ the random variable of the first nucleotide, and $X_2$ the RV of the second nucleotide. Suppose we have enough data to calculate joint probabilities of a nucleotide from an mother sequence and a nucleotide from a daughter sequence. We will use $P(X_i \Lambda X_j)$ to signify the joint probability of nucleotide $i$ from a mother sequence and nucleotide $j$ from a daughter sequence. We will shorten the notation as follows:
+$$P( X_1 = A \  \Lambda \ X_2 = A) = p_{AA}; \; P(X_1 =  A \ \Lambda \ X_2 = T) = p_{AT}, etc... $$ 
+$$P(X_2 =  A \ \Lambda \ X_1 = C) = q_{AC}; \; P(X_2 = A \ \Lambda \ X_1 = T) = q_{AT}, etc... $$ 
+Suppose the current sequence is AC. Then we choose the next sequence by keeping the second letter, and drawing the first letter from the following conditional probability distribution:
+$$ P(GC | AC) = \frac{1}{2} P(X_1 = G | X_2 = C) = \frac{p_{GC}}{2(p_{GC} + p_{AC} + p_{TC} + p_{CC}) } $$
+$$ P(TC | AC) = \frac{1}{2} P(X_1 = T | X_2 = C)  = \frac{p_{TC}}{2(p_{GC} + p_{AC} + p_{TC} + p_{CC}) } $$
+$$ P(CC | AC) = \frac{1}{2} (X_1 = C | X_2 = C) = \frac{p_{CC}}{2(p_{GC} + p_{AC} + p_{TC} + p_{CC}) } $$
+$$ P(AT | AC) = \frac{1}{2} P(X_2 = T | X_1 = A) = \frac{q_{TA}}{2(q_{CA} + q_{TA} + q_{GA} + q_{AA})}$$
+$$ P(AG | AC) = \frac{1}{2} P(X_2 = G | X_1 = A)  = \frac{q_{GA}}{2(q_{CA} + q_{TA} + q_{GA} + q_{AA})} $$
+$$ P(AA | AC) = \frac{1}{2} (X_2 = A | X_1 = A) = \frac{q_{AA}}{2(q_{CA} + q_{TA} + q_{GA} + q_{AA})}$$
+$$ P(AC | AC) = \frac{1}{2}  (X_1 = A | X_2 = C) +  \frac{1}{2}  (X_2 = C | X_1 = A)  = $$
+$$ = \frac{p_{AC}}{2(p_{GC} + p_{AC} + p_{TC} + p_{CC}) } + \frac{q_{CA}}{2(q_{CA} + q_{TA} + q_{GA} + q_{AA})} $$
+Using these conditional probabilities, we can implement the Gibbs sampler to generate a set of two-letter sequences that match the joint distribution.
+
+\section{Hidden Markov Models}
+
+A popular class of models is used in cases where the observations depend stochastically on some idealized Markovian states. Because these states cannot be observed directly, these are termed \emph{Hidden Markov Models} (HMM). 
+
+The idea is this: start with a standard Markov chain, with a random variable that can take discrete states, called \emph{hidden states} $H = \{h_1, ... , h_n \}$, with initial distribution $p_0$, and the transition matrix $P$ with $p_{ij}$ denoting probabilities of transition from state $h_j$ to state $h_i$. We now add to this a set of observations (outputs) $O = \{o_1, ... , o_m \}$ and the matrix of output probabilities $B$, where $b_{ij}$ is the probability that state $h_j$ will produce output $o_i$. 
+
+Here are three basic questions that one can address using a HMM:
+\begin{enumerate}
+
+\item Given a HMM ($H, p_0, P, O, B$) and a string of outputs $OS$, find the best-fit corresponding string of Markov states $HS$
+
+\item Given a HMM and a $OS$, find the probability of generating $OS$ from the HMM
+
+\item Given a set of outputs $OS$ and the topological structure of the HMM (which states transition to which, and which states can produce which outputs - essentially which elements $p_{ij}$ and $b_{ij}$ are zero), find the parameters  ($p_0, P, B$) that maximize the probability of producing $S$ from the HMM. (This is known as a \emph{maximum likelihood problem}, because it calculates the probabilities of model parameters, given the data, as opposed to the other way around, in which case it is simply a probability.)
+\end{enumerate}
+
+\subsection{Example: identifying motifs in DNA sequences}
+In bioinformatics, a common problem is to identify the location of a ``motif'' in a long sequence - an important sequence of letters that mark, for example, the binding site for some biomolecule. What makes searching for motifs difficult is the variation in the binding sequence across different homologs. Typically, a motif will have a preferred sequence (e.g. AACACG) but with some variations (e.g. 0.05 frequency of G, 0.01 frequency of T, and 0.02 frequency of C at site 1).
+
+This is where Hidden Markov Models come in handy. In a typical setup, the observed states for each site in the sequence is the actual letter (A,T,G,C) and the hidden states are the positions of this letter in the motif. If the site is outside of the motif, we call its state $N$ (for none) and if it is within the motif, we can use its position as the hidden state (1,2, etc.). 
+The hidden states have only a few allowed transitions, which correspond to moving forward along the sequence. Thus, the state $N$ is allowed to transition to itself (the next site is also outside of the motif) or to site 1 (first state in the motif). Then state 1 can transition only to state 2 (with probability 1), etc., until we reach the last site, which transitions to state $N$, or possibly state 1 if two motifs can occur consecutively. Each state also has output probabilities that can be computed from a data set by finding the distribution of letters at sites outside the motif, and at each of the sites in the motif.  Thus we construct a HMM which can be used to identify the most probable location of the motif, or conversely, determine the most likely parameters of the HMM.
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

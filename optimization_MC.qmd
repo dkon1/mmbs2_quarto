@@ -1,0 +1,86 @@
+# Discrete optimization problems: Monte Carlo search
+
+## Monte Carlo methods
+
+Monte Carlo algorithms are used to find the optimal solution in a large
+space of possible solutions, by randomly generating new candidates and
+randomly deciding whether to accept or reject them. The stochastic
+approach does not guarantee finding the global optimum, however, it
+enables one to sample the space of possibilities, far outside of the
+vicinity of the initial guess. Here is the outline of the method:
+
+1.  Start with an initial guess $\vec x_0$
+
+2.  Generate a new candidate $\vec x_{i+1}$, usually using a random
+    algorithm. For example, given a path for the TSP, one can generate a
+    new candidate path by swapping the order of two randomly chosen
+    cities.
+
+3.  Evaluate the objecting function of the new candidate state and
+    compare with the objective function at the old state. If the new
+    candidate is better ($f(\vec x_{i+1}) < f(\vec x_i)$), accept the
+    new state. If the new candidate does not have a lower objective
+    function, use the *Metropolis criterion* to randomly decide whether
+    to accept the new state. Thus, if $f(\vec x_{i+1}) > f(\vec x_i)$,
+    accept the new state with probability
+    $P = e^{f(\vec x_{i-1}) - f(\vec x_i)}$.
+
+4.  Repeat until the algorithm no longer seems to improve the
+    predictions: usually, until a maximum number of consecutive
+    rejections is reached.
+
+The fact that the Monte Carlo algorithm sometimes will accept a worse
+(in term of the objective function) new candidate state means that it is
+capable of climbing out of a local well which may not be the deepest.
+This, of course, still does not guarantee that it finds the global
+minimum in any finite amount of time. However, given enough iterations,
+Monte Carlo can explore the space of possible states and find something
+close to the global optimum.
+
+## Traveling Salesman Problem
+
+We now proceed to complex optimization problems for which the objective
+function either has no exact formula, or there is no way of computing
+gradients and curvatures. One such class of cases are functions for
+which the variables have only discrete domains. A famous example is the
+*traveling salesman problem*, in which the goal is to find the optimal
+order of visiting $N$ cities, with optimal meaning the order with the
+lowest total distance traveled. This seemingly simple problem has no
+efficient algorithm for solving it exactly - it belongs to a class of
+problems known as \`\`NP-complete'' (I will not attempt to explain the
+terminology here). All exact methods for solving the TSP are as
+inefficient as the brute force method of considering every possible
+order of visiting the cities, calculating the total distance of each,
+and picking the best one. However, since the number of such paths is
+$N!$, this is an impractical way of solving the problem.
+
+## Simple protein folding model: HP on a lattice
+
+Protein folding, as mentioned above, is a very complex problem of
+finding the global energy minimum is a very large space of states. The
+main driving force behind the process is the hydrophobic effect: the
+preference of hydrophobic (oily) amino acid residues to stick together
+and minimize their interactions with water. Some residues are
+hydrophobic, and others are polar, and the latter usually end up in the
+interior of a folded protein structure.
+
+One extremely simple type of models to study the mechanism of protein
+folding is the HP model on a lattice, where a protein is modeled as a
+chain of beads, representing amino acid residues, each either
+hydrophobic (H) or polar (P) in character. The positions of the beads
+are restricted to a lattice, typically of cubic symmetry, so there are
+only a discrete number of possible conformations, but just like in the
+traveling salesman problem, they grow exponentially. To construct a
+possible protein "conformation", one can start the chain at one end, and
+then place the next bead in one of the neighboring lattice points which
+not occupied. If one chooses the next step randomly, it is called a
+"self-avoiding random walk".
+
+The object is to find the conformation which minimizes the total energy.
+Total energy is HP models can be defined differently, but the simplest
+calculation is just to count the number of pairs of hydrophobic resides
+which are neighbors (one lattice point away) and take the negative of
+that number to be the total energy. Thus, there is a payoff for placing
+hydrophobic residues near each other, and no effect from the location of
+polar residues (which is not physically correct). You will use the
+computer lab to explore this model using a Monte Carlo approach.

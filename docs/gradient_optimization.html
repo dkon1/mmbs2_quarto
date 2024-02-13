@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.280">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -56,12 +62,42 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -69,11 +105,16 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gradient_optimization.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -81,68 +122,86 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Mathematical Methods for Biology, Part 2</a> 
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PCA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  <a href="./PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></a>
+  <a href="./gradient_optimization.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></a>
+  <a href="./fourier_convolution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./optimization_MC.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Discrete optimization problems: Monte Carlo search</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markov_chains.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Markov models and transition matrices</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">2.1</span>  Overview</a></li>
-  <li><a href="#optimization-with-one-variable" id="toc-optimization-with-one-variable" class="nav-link" data-scroll-target="#optimization-with-one-variable"><span class="toc-section-number">2.2</span>  Optimization with one variable</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">2.1</span> Overview</a></li>
+  <li><a href="#optimization-with-one-variable" id="toc-optimization-with-one-variable" class="nav-link" data-scroll-target="#optimization-with-one-variable"><span class="header-section-number">2.2</span> Optimization with one variable</a>
   <ul class="collapse">
-  <li><a href="#golden-section-search" id="toc-golden-section-search" class="nav-link" data-scroll-target="#golden-section-search"><span class="toc-section-number">2.2.1</span>  golden section search</a></li>
-  <li><a href="#bisection-method" id="toc-bisection-method" class="nav-link" data-scroll-target="#bisection-method"><span class="toc-section-number">2.2.2</span>  bisection method</a></li>
-  <li><a href="#secant-method" id="toc-secant-method" class="nav-link" data-scroll-target="#secant-method"><span class="toc-section-number">2.2.3</span>  secant method</a></li>
-  <li><a href="#newton-raphson-method" id="toc-newton-raphson-method" class="nav-link" data-scroll-target="#newton-raphson-method"><span class="toc-section-number">2.2.4</span>  Newton-Raphson method</a></li>
+  <li><a href="#golden-section-search" id="toc-golden-section-search" class="nav-link" data-scroll-target="#golden-section-search"><span class="header-section-number">2.2.1</span> golden section search</a></li>
+  <li><a href="#bisection-method" id="toc-bisection-method" class="nav-link" data-scroll-target="#bisection-method"><span class="header-section-number">2.2.2</span> bisection method</a></li>
+  <li><a href="#secant-method" id="toc-secant-method" class="nav-link" data-scroll-target="#secant-method"><span class="header-section-number">2.2.3</span> secant method</a></li>
+  <li><a href="#newton-raphson-method" id="toc-newton-raphson-method" class="nav-link" data-scroll-target="#newton-raphson-method"><span class="header-section-number">2.2.4</span> Newton-Raphson method</a></li>
   </ul></li>
-  <li><a href="#optimization-of-multivariable-functions-using-derivatives" id="toc-optimization-of-multivariable-functions-using-derivatives" class="nav-link" data-scroll-target="#optimization-of-multivariable-functions-using-derivatives"><span class="toc-section-number">2.3</span>  Optimization of multivariable functions using derivatives</a>
+  <li><a href="#optimization-of-multivariable-functions-using-derivatives" id="toc-optimization-of-multivariable-functions-using-derivatives" class="nav-link" data-scroll-target="#optimization-of-multivariable-functions-using-derivatives"><span class="header-section-number">2.3</span> Optimization of multivariable functions using derivatives</a>
   <ul class="collapse">
-  <li><a href="#multivariable-optimization-problem" id="toc-multivariable-optimization-problem" class="nav-link" data-scroll-target="#multivariable-optimization-problem"><span class="toc-section-number">2.3.1</span>  multivariable optimization problem</a></li>
-  <li><a href="#gradient-and-contours" id="toc-gradient-and-contours" class="nav-link" data-scroll-target="#gradient-and-contours"><span class="toc-section-number">2.3.2</span>  gradient and contours</a></li>
-  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="toc-section-number">2.3.3</span>  gradient descent</a></li>
-  <li><a href="#newton-raphson-method-1" id="toc-newton-raphson-method-1" class="nav-link" data-scroll-target="#newton-raphson-method-1"><span class="toc-section-number">2.3.4</span>  Newton-Raphson method</a></li>
-  <li><a href="#levenberg-marquardt-method" id="toc-levenberg-marquardt-method" class="nav-link" data-scroll-target="#levenberg-marquardt-method"><span class="toc-section-number">2.3.5</span>  Levenberg-Marquardt method</a></li>
+  <li><a href="#multivariable-optimization-problem" id="toc-multivariable-optimization-problem" class="nav-link" data-scroll-target="#multivariable-optimization-problem"><span class="header-section-number">2.3.1</span> multivariable optimization problem</a></li>
+  <li><a href="#gradient-and-contours" id="toc-gradient-and-contours" class="nav-link" data-scroll-target="#gradient-and-contours"><span class="header-section-number">2.3.2</span> gradient and contours</a></li>
+  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="header-section-number">2.3.3</span> gradient descent</a></li>
+  <li><a href="#newton-raphson-method-1" id="toc-newton-raphson-method-1" class="nav-link" data-scroll-target="#newton-raphson-method-1"><span class="header-section-number">2.3.4</span> Newton-Raphson method</a></li>
+  <li><a href="#levenberg-marquardt-method" id="toc-levenberg-marquardt-method" class="nav-link" data-scroll-target="#levenberg-marquardt-method"><span class="header-section-number">2.3.5</span> Levenberg-Marquardt method</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -152,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Optimization using gradients</span></h1>
 </div>
 
 
@@ -165,7 +224,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <section id="overview" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">2.1</span> Overview</h2>
@@ -184,12 +245,12 @@ ul.task-list li input[type="checkbox"] {
 <section id="golden-section-search" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="golden-section-search"><span class="header-section-number">2.2.1</span> golden section search</h3>
 <p>Let us first consider searching for the minimum (or maximum, the problems are really the same except for a minus sign) of a function of one variable <span class="math inline">\(f(x)\)</span>. The goal is to locate the minimum value of the function within a certain interval on the <span class="math inline">\(x\)</span>-axis, to a desired tolerance. We assume only that we can evaluate the function at any given value of <span class="math inline">\(x\)</span>. Here is the outline of the algorithm:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Golden section search
 </div>
 </div>
@@ -206,7 +267,7 @@ Golden section search
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figs/golden_search.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Golden ratio method for a 1-variable function f(x); <a href="https://en.wikipedia.org/wiki/Golden-section_search#/media/File:GoldenSectionSearch.png">Figure source</a></figcaption><p></p>
+<figcaption>Golden ratio method for a 1-variable function f(x); <a href="https://en.wikipedia.org/wiki/Golden-section_search#/media/File:GoldenSectionSearch.png">Figure source</a></figcaption>
 </figure>
 </div>
 <p>The question is, what is the optimal way to pick the new point <span class="math inline">\(x_4\)</span>? Since we have no information about the shape of the function <span class="math inline">\(f(x)\)</span>, we don’t know where the minimum is more likely to be hiding. The best approach is to hedge your bets and make each option (3 or 4) result in the same interval scaled by the same factor.</p>
@@ -219,15 +280,15 @@ Golden section search
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figs/Bisection_method.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Bisection method involves cutting the interval bracketing a zero in two; <a href="https://en.wikipedia.org/wiki/Bisection_method#/media/File:Bisection_method.svg">Figure source</a></figcaption><p></p>
+<figcaption>Bisection method involves cutting the interval bracketing a zero in two; <a href="https://en.wikipedia.org/wiki/Bisection_method#/media/File:Bisection_method.svg">Figure source</a></figcaption>
 </figure>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Golden section search
 </div>
 </div>
@@ -245,12 +306,12 @@ Golden section search
 <section id="secant-method" class="level3" data-number="2.2.3">
 <h3 data-number="2.2.3" class="anchored" data-anchor-id="secant-method"><span class="header-section-number">2.2.3</span> secant method</h3>
 <p>Secant method is also a root-finding method, and can thus be used to find optima of functions with a computable derivative. If the derivative function is f(x), then the algorithm is:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Secant algorithm
 </div>
 </div>
@@ -266,7 +327,7 @@ Secant algorithm
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figs/Secant_method.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">The secant method uses the line connecting the two bracketing points to approximate the root; <a href="https://commons.wikimedia.org/w/index.php?curid=877497">Figure source</a></figcaption><p></p>
+<figcaption>The secant method uses the line connecting the two bracketing points to approximate the root; <a href="https://commons.wikimedia.org/w/index.php?curid=877497">Figure source</a></figcaption>
 </figure>
 </div>
 <p>The secant method is faster to converge than bisection for most functions.</p>
@@ -274,13 +335,13 @@ Secant algorithm
 <section id="newton-raphson-method" class="level3" data-number="2.2.4">
 <h3 data-number="2.2.4" class="anchored" data-anchor-id="newton-raphson-method"><span class="header-section-number">2.2.4</span> Newton-Raphson method</h3>
 <p>We will now consider an old method for finding roots of functions, devised by the Great Newton Himself, is also useful for finding maxima and minima of functions for which an exact formula is given. To use for optimization, it requires not only the knowledge of the derivative function <span class="math inline">\(f(x)\)</span> (as for secant and bisection method) but also the knowledge of the second derivative function <span class="math inline">\(f'(x)\)</span> of the function we want to optimize.</p>
-<p>The idea is based on the first-order Taylor expansion of a function near a point <span class="math inline">\(x_0\)</span>: <span class="math inline">\(f(x_0 + \Delta x) = f(x_0) + \Delta x f'(x_0) + ...\)</span>. The dots indicate higher-order terms that we will ignore, for sufficiently small <span class="math inline">\(\Delta x\)</span>. Now, suppose the function has a root (zero) at <span class="math inline">\(x_0\)</span>, so <span class="math inline">\(f(x_0) = 0\)</span>. Then, if we are at a point near the root, <span class="math inline">\(x_0 + \Delta x\)</span>, we can calculate how far away it is from the root, by simply solving for <span class="math inline">\(\Delta x = f(x_0 + \Delta x) / f'(x_0)\)</span>. The idea of Newton’s method is to find the step size needed to reach the root, by using the value of the derivative at the current point <span class="math inline">\(x_0 + \Delta x\)</span> (assuming the points are close enough that the slopes are almost equal). Then the steps for the algorithm are:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p>The idea is based on the first-order Taylor expansion of a function near a point <span class="math inline">\(x_0\)</span>: <span class="math inline">\(f(x_0 + \Delta x) = f(x_0) + \Delta x f'(x_0) + ...\)</span>. The dots indicate higher-order terms that we will ignore, for sufficiently small <span class="math inline">\(\Delta x\)</span>. Now, suppose the function has a root (zero) at <span class="math inline">\(x_0\)</span>, so <span class="math inline">\(f(x_0) = 0\)</span>. Then, if we are at a point near the root, <span class="math inline">\(x_0 + \Delta x\)</span>, we can calculate how far away it is from the root, by simply solving for <span class="math inline">\(\Delta x  = f(x_0 + \Delta x) /  f'(x_0)\)</span>. The idea of Newton’s method is to find the step size needed to reach the root, by using the value of the derivative at the current point <span class="math inline">\(x_0 + \Delta x\)</span> (assuming the points are close enough that the slopes are almost equal). Then the steps for the algorithm are:</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Newton-Raphson algorithm in 1 dimension
 </div>
 </div>
@@ -295,7 +356,7 @@ Newton-Raphson algorithm in 1 dimension
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figs/Newton_iteration.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Newton-Raphson method for finding roots uses the derivative of the function to find the intersection of the tangent line with the x-axis; <a href="https://commons.wikimedia.org/wiki/File:Newton_iteration.svg">Figure source</a></figcaption><p></p>
+<figcaption>Newton-Raphson method for finding roots uses the derivative of the function to find the intersection of the tangent line with the x-axis; <a href="https://commons.wikimedia.org/wiki/File:Newton_iteration.svg">Figure source</a></figcaption>
 </figure>
 </div>
 <p>The method turns out to be very efficient. Its only limitation is that it cannot find a root for which the derivative is zero (graphically, a root at which the graph of the function only touches the <span class="math inline">\(x\)</span>-axis). Another complication is that, if the starting point is not close enough to a root, it can be hard to predict which root the method will find, but once it settles in near one, it will reach it quickly. If the value of the derivative <span class="math inline">\(f'(x_i)\)</span> is small, then the method can bounce around, sometimes almost chaotically, so its efficiency strongly depends on starting in proximity to a root.</p>
@@ -321,12 +382,12 @@ Newton-Raphson algorithm in 1 dimension
 \frac{\partial f}{\partial y} = 2y +4
 \]</span></p>
 <p>This allows us to define the multi-dimensional equivalent of the derivative: the <em>gradient</em> of a function,</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Definition
 </div>
 </div>
@@ -336,12 +397,12 @@ Definition
 </div>
 </div>
 <p>To gain some geometric intuition about gradients, let us introduce the notion of contours of <span class="math inline">\(f(\vec x)\)</span></p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Definition
 </div>
 </div>
@@ -359,12 +420,12 @@ Definition
 <h3 data-number="2.3.3" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">2.3.3</span> gradient descent</h3>
 <p>The simplest idea for finding the lowest point in a valley is to follow the slope downward. In multiple dimensions, the direction of greatest downward change (steepest descent) is given by the gradient, which leads to the <em>gradient descent</em> algorithm.</p>
 <p>The first method for minimization of a multidimensional function simply takes steps in the direction of the gradient, until the point is sufficiently close to the bottom of the valley. This is called the method of <em>gradient descent</em>:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Gradient descent algorithm
 </div>
 </div>
@@ -382,12 +443,12 @@ Gradient descent algorithm
 <section id="newton-raphson-method-1" class="level3" data-number="2.3.4">
 <h3 data-number="2.3.4" class="anchored" data-anchor-id="newton-raphson-method-1"><span class="header-section-number">2.3.4</span> Newton-Raphson method</h3>
 <p>A different approach at finding the minimum of a multi-variable function is to extend the Newton-Raphson method from one variable to multiple. The idea is once again to convert the optimization problem for <span class="math inline">\(f(\vec x)\)</span> into a root-finding problem for <span class="math inline">\(\nabla f (\vec x)\)</span> where the gradient function plays the role of the derivative in the 1-dimensional Newton’s method. In order for this to work, we need an equivalent to the second derivative as well.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Definition
 </div>
 </div>
@@ -415,12 +476,12 @@ H_{i,j} = \frac{\partial^2 f}{\partial x_i \partial x_j}
 H(f(\vec x)) = \begin{pmatrix} 2 &amp; 0 \\ 0 &amp; 2 \end{pmatrix}
 \]</span></p>
 <p>Now that we have the multi-variable equivalents of <span class="math inline">\(f'(x)\)</span> and <span class="math inline">\(f''(x)\)</span>, we can formulate the multidimensional Newton-Raphson algorithm using vectors and matrices:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Multi-variable Newton-Raphson algorithm
 </div>
 </div>
@@ -438,12 +499,12 @@ Multi-variable Newton-Raphson algorithm
 <section id="levenberg-marquardt-method" class="level3" data-number="2.3.5">
 <h3 data-number="2.3.5" class="anchored" data-anchor-id="levenberg-marquardt-method"><span class="header-section-number">2.3.5</span> Levenberg-Marquardt method</h3>
 <p>The Levenberg-Marquardt method is a combination of the gradient descent and Newton-Raphson methods. It uses their respective strengths, by using the gradient to quickly reach the vicinity (approximately quadratic valley) of a minimum, and then use the curvature information from the Hessian to finish the job efficiently. The insight of this method is that one can interpolate between the two methods by introducing a parameter <span class="math inline">\(\lambda\)</span> which at high values weigh the method toward gradient descent, and at small values the Hessian and therefore Newton’s method dominates. Here is an outline of the algorithm, which starts with a large value of <span class="math inline">\(\lambda\)</span>, assuming that the initial guess <span class="math inline">\(\vec x_0\)</span> is far from the minimum:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Levenberg-Marquardt algorithm
 </div>
 </div>
@@ -492,9 +553,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -530,10 +605,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -543,8 +617,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -559,6 +642,238 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -600,17 +915,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./PCA.html" class="pagination-link">
+      <a href="./PCA.html" class="pagination-link  aria-label=" &lt;span="" component="" analysis&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./fourier_convolution.html" class="pagination-link">
+      <a href="./fourier_convolution.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Fourier transforms and convolutions</span>">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Fourier transforms and convolutions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

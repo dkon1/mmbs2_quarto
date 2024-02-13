@@ -1,0 +1,284 @@
+\documentclass[11pt]{book}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+
+\oddsidemargin 0in
+\evensidemargin 0in
+\textwidth 6.5in
+%\headheight 1.0in
+\topmargin 0in
+
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                       \if@mainmatter
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+                         \addcontentsline{toc}{chapter}%
+                                   {\protect\numberline{\thechapter}#2}%
+                       \else
+                         \addcontentsline{toc}{chapter}{#2}%
+                       \fi
+                    \else
+                      \addcontentsline{toc}{chapter}{#2}%
+                    \fi
+                    \chaptermark{#1}%
+                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{#2}]%
+                    \else
+                      \@makechapterhead{#2}%
+                      \@afterheading
+                    \fi}
+                      % Activate to display a given date or no date
+ \usepackage[colorlinks,urlcolor=blue]{hyperref}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{mosdef}{Definition}[chapter]
+\bibliographystyle{cell}   
+
+\begin{document}
+\setcounter{chapter}{6}
+\chapter[Continuous-time Markov models ]{Markov models in continuous time: theory and simulations}
+
+
+\section{Exponential distribution} 
+An exponential random variable $X$ is a continuous random variable with the following probability distribution (density function):
+$$ f(x) = \lambda e^{-\lambda x}; \; x \geq 0 $$
+The
+$$ E[X] = \int_0^\infty x f(x) dx = -x e^{-\lambda x}  |_0^\infty + \int_0^\infty e^{-\lambda x} dx = \frac{1}{\lambda}$$
+
+We can calculate its cumulative distribution function (cdf):
+
+$$ P( X < x) = \int_0^x f(y) dy = -e^{-\lambda y}|_0^x = 1 - e^{-\lambda x} $$
+
+\subsection{Exponential distribution has no memory }
+A random variable $X$ is said to have no memory if:
+$$ P(X > s + t | X > t ) = P(X > s)$$
+In this case, the positive numbers $t$ and $s$ are interpreted as an initial time and a time increment, and the statement says that given the probability of $X$ being greater than  $t$, the probability of $X$ being greater than $t$ by some increment $s$ is the same as the probability of $X$ being greater than $s$.
+
+This condition can be written, by definition of conditional probability, as follows:
+$$ \frac{P (X  > s +t , X > t)}{P(X > t)} = P(X > s) \Rightarrow P (X  > s +t ) = P(X > t)P(X > s) $$
+($P(X > s +t , X > t) = P (X  > s +t )$, since $X > t$ is redundant.)
+The exponential random variable satisfies this condition, since we know the expression for $P(X > t)$ from the cdf: $P(X > t) = 1 - P(X < t) = e^{-\lambda t}$, and using it we see that the expression is true:
+$$ P(X > s +t)= e^{-\lambda (s+t)} = e^{-\lambda s}e^{-\lambda t} = P(X > t)P(X > s)$$
+
+\subsection{Example: waiting to be served}
+The service time for an individual customer is often modeled by an exponential distribution with parameter $\lambda$. This model rests on the assumption that each customer's time is independent of the others. 
+
+Suppose there are two people being served by two different clerks, with the same parameter $\lambda$. What is the probability that a third customer who walks in and has to wait for one of the two customers to finish, will finish his business before the last of the two current customers?
+
+Let us say that the first customer finishes, and the third one steps up to the clerk. Recall the lack of memory property, $ P(X > s + t | X > t ) = P(X > s)$, where we can interpret $t$ as the length of time that the second customer has been helped by the clerk, and $s$ is the length of time that she still has to wait. We see that the probability is identical to $P(X > s)$, which in turn is identical to the probability distribution of the third customer's service time. Thus, the third customer and the second are equally likely to finish first!
+
+\section{Poisson process}
+\subsection{Counting process}
+Suppose we want to count the number of stochastic events occurring over time. Let $N(t)$ be the random variable of the number of events occurring by time $t$. Then it is called a \emph{counting process} if it satisfies the following conditions:
+\begin{enumerate}
+\item $N(0) \geq 0$
+
+\item $N(t)$ is a nonnegative integer
+
+\item If $s < t$,  $N(s) \leq N(t)$ (the count of events occurring never decreases over time)
+
+\item For $s < t$, $N(t) - N(s)$ is the number of events occurring in time interval $(s,t]$.
+\end{enumerate}
+In this general definition of counting processes, we know nothing about how the event occurrences are distributed. If we add two simple assumptions, however, we will find that we can say something about this random variable.
+
+\subsection{Poisson process}
+Let us postulate that the stochastic events which we are counting occur \emph{independently} and with a probability distribution which is \emph{stationary} over time.
+Then the particular counting we obtain is called the Poisson process, and it has the following properties:
+\begin{enumerate}
+\item $N(0) = 0$
+\item the occurrence of events in time interval $(t, t+s)$ is independent of the occurrences in the interval $[0,t]$
+\item the probability that a single event occurs during time interval $(t, t+s)$ is given by $\lambda s + o(s)$, and the probability that more than one event occurs is $o(s)$
+\end{enumerate}
+In the last condition, we use the $o(s)$ notation to denote a number of the same order as $s$. Thus, for sufficiently small $s$, those numbers are negligible. This allow us to derive a differential equation for the probabilities of the Poisson random variable. Let $P_n(t)$ be the probability of $n$ events occurring in time $t$. Let us further extend the count of events to the next interval of $(t,t+s)$. If $s$ is small enough, the only two possibilities are the occurrence of either zero or one event in the time interval $(t,t+s)$, since the probability of two or more events occurring is vanishingly small. Then the probability of $n$ occurrences over time $t+s$ is a sum of the probability of $n$ occurrences over time $t$ and none over time $s$, and the probability of $n-1$ occurrences over time $t$ and one over time $s$. The probability that none occur over time $s$ is $1-\lambda s$ (ignoring $o(s)$), and the probability of a single occurrence is $\lambda s$ (same condition). We thus have the following equation:
+$$ P_n(t+s) = P_n(t) (1- \lambda s) + P_{n-1}(t) \lambda s \Rightarrow  \frac{P_n(t+s) - P_n(t)}{s} = \lambda(P_{n-1}(t) - P_{n}(t))$$
+We see the Newton's quotient on the left, and taking the limit as $s$ goes to 0, we get the differential equation:
+$$ P_n'(t) = \lambda(P_{n-1}(t) - P_{n}(t))$$
+For $n=0$ the differential equation is even simpler, we simply get:
+$$ P_0'(t) = - \lambda P_0(t) \Rightarrow P_0(t) = e^{- \lambda t}$$
+Plugging this value into the equation for $P_1'(t)$, we can find the solution to be $P_1(t) = \lambda t e^{- \lambda t}$. By induction, it can be shown that the probability distribution for any number $n$ of arrivals is given by the \emph{Poisson distribution}
+$$ P(N(s+t) - N(s) = n) = P_n(t) = e^{- \lambda t} \frac{ (\lambda t)^n}{n!} $$
+
+\subsection{Inter-arrival times}
+Let us define a random variable corresponding to the wait time between two consecutive events; that is $T_n$ is the time between the $n-1$th event and the $n$th event. We can find its probability distribution by the following argument. The probability of the wait time for the first event is actually the same as the probability that no event has taken place yet, or more precisely:
+$$ P(T_1 > t ) = P(N(t) = 0) = e^{- \lambda t}$$
+Now the probability distribution of the $n$th inter-arrival time is actually the same (this should be clear intuitively since the events are independent and stationary over time). Let $s$ be the time of the $n-1$th event, then the probability that the wait for the next event is greater than $t$ is:
+$$ P(T_n > t) = P(N(t+s) - N(s) = 0) = P(N(t) = 0) = e^{-\lambda t}$$
+We see that this distribution function matches the one we discussed at the top of this lecture. It is in fact, the exponential distribution, with the probability density function given by $P(T_n = t) = \lambda e^{-\lambda t}$.
+
+\section{Birth-death processes}
+A particular class of continuous time Markov processes is highly useful for various dynamic models, including ecological, biochemical, and epidemiological applications. These are called birth-death processes, because they can be conceptualized as a population of individuals, which may either increase or decrease in number. Since the time variable is continuous, we assume that only one birth or death may occur at any given instant. This is the principal difference of birth-death processes and the branching process we studied earlier: in the discrete-time branching process, an individual may produce any number of offspring in a time step. 
+
+In terms of Markovian states, a birth-death process can be thought of as a random walk (in continuous time) with each step representing either an increase of 1 (birth) or decrease of one (death). The parameters of the model are the transition probabilities $\lambda_n$, the probability of a birth for a population of $n$ individuals, and $\mu_n$, the probability of death for a population of $n$ individuals.
+
+\subsection{Examples: pure birth processes}
+The Poisson process described above is the simplest example of a pure birth process. Since it counts the cumulative number of events, which never decreases, it has no death probabilities. The occurrence of the events is stationary and independent of the past, which means the birth probabilities are constant: $\lambda_n = \lambda$.
+
+A slightly more interesting example is a pure birth process with birth rates that scale linearly to population size: $\lambda_n = n\lambda$. This may model a population of individuals that on average reproduce with the same rate $\lambda$ independently of the others. It is known as the Yule process after the person who first formulated it.
+
+Using a similar derivation to the one for the Poisson process, we can write down the following differential equation for the probabilities of the Yule process:
+$$ P'_n(t) = -n  \lambda P_n(t)  + (n-1)  \lambda P_{n-1}(t) $$
+Suppose that the process starts with 1 individual at $t=0$. Then the solution is 
+$$ P_n(t) = e^{-\lambda t} (1 - e^{-\lambda t})^{n-1} $$
+This looks like the geometric distribution, describing the probability of a run of $n-1$ successes, with probability of success $ (1 - e^{-\lambda t})$.
+
+\subsection{Example: linear birth-death process and extinction}
+A linear birth-death process has constant birth and death rates for each individual, and therefore the overall rates are proportional to the population size:  $\lambda_n = n \lambda$ and $\mu_n = n \mu$. At each state (population size) the population may either decrease by 1 or increase by 1. Because at each state there are only two options, we can calculate the transition probabilities of birth or death: 
+$$p_{n,n+1} = \frac{\lambda_n}{\lambda_n + \mu_n} = \frac{\lambda}{\lambda + \mu} ; \; p_{n,n-1} = \frac{\mu_n}{\lambda_n + \mu_n} = \frac{\mu}{\lambda + \mu}$$
+Note that these transition probabilities are independent of $n$. The linear birth-death process is the continuous equivalent of a random walk in discrete time, e.g. the gambler's ruin problem. There is a result that states that there is a limiting probability, independent of the initial state:
+$$ \lim_{t \rightarrow \infty} P_n(t) = p_n$$
+These limiting probabilities are independent of time, and thus should be the same as in the discrete-time random walk. For instance, the state $n=0$ (extinction) is absorbing in this model (since the birth rate $\lambda_0 = 0$) and it is often interesting to calculate the extinction probability for the population over the long term. We can use the results of the gambler's ruin problem when $N$ goes to infinity, and find that the probability of extinction of the population is 1 if $\lambda \leq \mu$ (not surprisingly) and is equal to $(\mu/\lambda)^m$, where $m$ is the initial population.
+
+\section{Transition probabilities and instantaneous rates}
+Let us now turn to general questions of continuous time Markov models. We have seen in the birth-death models birth and death parameters $\lambda_n$ and $\mu_n$, which represent the mean number of individuals that are added or subtracted from the population \emph{in a unit of time}. These parameters are the \emph{instantaneous rates} of the continuous time Markov model. These rates can let us figure out the probability of, e.g. a birth occurring within a time period $t$, as we saw above: 
+$P_{n,n+1} = t \lambda_n + o(t)$. 
+
+\subsection{Escape wait times and probability of transition}
+In general, for a continuous-time Markov model, the transition probability between two states depends on the time $t$, and is defined as follows:
+$$ P_{ji}(t) = P(X(t+s) = j | X(s) = i)$$
+
+We now consider a more narrow question for continuous time Markov chains: starting in state $i$, what is the \emph{probability that the first transition occurs into state} $j$? Let us call this probability $p_{ji}$. Let us also define the \emph{rate of escaping state $i$} into any other state as the sum of all the instantaneous rates of escape from state $j$:
+$$v_{i} = \sum_{j} q_{ji}$$
+It should also be clear from the definition of $p_{ji}$ and the rate of escape $v_i$, that the transition rate from $i$ to $j$ is the product of the escape rate and the probability that the escape happens into state $j$:
+$$ q_{ji} = v_i p_{ji}$$
+Then we can put the two definitions together:
+$$ v_i = \sum_{j} q_{ji}  = \sum_j v_i p_{ji}$$ 
+Thus the transition probabilities can be expressed as follows:
+$$p_{ji} = \frac{q_{ji}}{v_i} = \frac{q_{ji}}{\sum_j q_{ji}}$$
+This shows how specifying the instantaneous transition rates is enough to determine the transition probabilities, and thus define the behavior of the continuous-time Markov chain. 
+
+
+\section{Escape from a state in continuous time Markov processes}
+Suppose the random variable is in state $i$, and may transition into one of $k$ other states, with instantaneous rates $\lambda_1, ..., \lambda_k$. Individually, the waiting times for the transitions are random variables with the exponential distributions  $T_1 = \lambda_1e^{-\lambda_1 t}, ...,T_k = \lambda_k e^{\lambda_k t}$. The next transition (let us call it $\tau$) is the minimum (first) of all the waiting times, and so its probability distribution is as follows: $P(\tau > t) = P \{ \min( T_1, ..., T_k) > t \} = P \{ (T_1 > t); ... ; (T_k > t) \} $
+
+Because these random variables are independent, the probability of all the RVs being greater than $t$ is the product of the individual probabilities:
+$$ P(\tau_i > t) = P(T_1 > T) ... P(T_k > t) = e^{-\lambda_1 t} ... e^{-\lambda_k t} = e^{- (\lambda_1+ ... + \lambda_k)t} $$ 
+Thus, the waiting time distribution for first escape from state $i$ is the exponential distribution with the rate parameter the sum of all the transition rates out of $i$. This is known as the escape rate from state $i$, and is denoted by $v_i$. It follows from this that the mean waiting time for escape from state $i$ is
+$$ E[\tau_ i] = \frac{1}{v_{i}} = \frac{1}{\sum_j\lambda_{j}} $$
+
+The other critical question for a Markov process, given that it is currently in state $i$, is which state the next transition will lead to. Let us call the probability that the first transition from state $i$ will occur to state $j$ $\rho_{ij}$. This probability is (plausibly) proportional to the infinitesimal transition rate $\lambda_j$, and since all the probabilities have to add up to 1, the probability is:
+$$ \rho_{ij}   = \frac{\lambda_j}{\sum_j \lambda_j} =  \frac{\lambda_j}{v_i} $$
+
+\section{Gillespie algorithm}
+Using the two pieces of information derived above, we can construct a powerful, exact method for simulating any continuous-time Markov process, based on the knowledge of the infinitesimal transition rates. The concept of the original Gillespie paper from 1977 is, starting at some initial state, choose an exponentially distributed next transition time, and then select the state to which the transition occurs according to the probability given above. Then repeat again, and you will produce a simulation faithful to the given transition rates.
+
+One important note about the implementation: typically, we are given microscopic transition rates, e.g. birth rate per individual. However, if we are in a given state, the relevant transition rates are actually the individual rates times the number of ways that this transition can take place, e.g. how many individuals there are in the population (in chemistry, this is the stoichiometry of the reaction). Thus, in implementation we take the microscopic rates $\lambda_i$ and multiply them by the stoichiometric coefficients $c_i$ to result in the actual transition rates, also known as propensities.
+
+\begin{enumerate}
+\item Input values for $\lambda_i$ (microscopic rate for transition $i$) and $c_i$; (stoichiometric constant for reaction $i$), as well as the initial state
+$(x_0, y_0, ...)$; set $t =0$ \\
+\item  Compute propensities $a_i = \lambda_i c_i $ for each transition out of the current state. Calculate $A_{tot} = \sum_{i=1}^M a_i$\\
+\item Generate uniform random number $r_1 \in (0,1)$. Compute the time $\tau$ until the next reaction from the exponential distribution, by using the following formula: 
+$$\tau =  - \frac{\ln r_1}{A_{tot}}$$
+\item  Generate uniform random number  $r_2 \in (0,1)$. The next transition $k$ is given by the integer for which
+$$ \frac{\sum_{i=1} ^{k-1} a_i}{A_{tot}}  <   r_2  \leq  \frac{\sum_{i=1} ^k a_i}{A_{tot}}$$
+\item  Update time $t = t + \tau$; and adjust the numbers of reactants involved in the chosen transition $k$. Repeat starting at step 2 for desired number of iterations.
+\end{enumerate}
+
+\subsection{Example: pure birth process}
+It is simple to apply the Gillespie algorithm to a pure birth or pure death process, in which there is only one transition possible out of every state. There is only one decision
+to make, and that is when the next birth transition will take place. 
+
+\subsection{Example: epidemiology models}
+Suppose we want to study the stochastic spread of an infection through a population. We introduce three categories: Susceptible, Infected, and Recovered. There are two possible transitions, with infinitesimal rates of infection $\beta$ and of recovery $\gamma$:
+\begin{enumerate}
+\item Infection: with propensity $\beta I S$, transition from $S$ to $I$ (decrease $S$ by 1 and increase $I$ by 1)
+\item Recovery: with propensity $\gamma I$, transition from $I$ to $R$ (decrease $I$ by 1 and increase $R$ by 1)
+\end{enumerate}
+In this model, recovery is permanent, and so the infection has two different courses: it either spreads to the whole population, or else dies out before everyone has been infected. Gillespie simulations are useful for considering the effect of stochasticity on the course of the epidemic.
+
+\section{Evolution of probability distribution with time}
+\subsection{Chapman-Kolomogorov equation}
+Let us analyze the time-dependent transition probabilities $  P_{i \rightarrow  j} (t)$. First, there is a result called the Chapman-Kolmogorov equation, which describes any transition probability as a sum of transitions through all possible states at an intermediate time $t$:
+$$P_{i\rightarrow j} (t+s)  = \sum_{k=0}^{\infty} P_{i \rightarrow k}(t)P_{k \rightarrow j}(s)$$
+for all $s,t \geq 0$
+
+There is a direct relationship between the time derivatives of the transition probabilities to the instantaneous rates $\lambda_{i \rightarrow j}$. For short times $h$, the transition probability from a state $i$ to state $j$ is given by the product of the instantaneous transition rate and $h$, plus terms of order $h^2$ and higher. Similarly, the probability of escaping from state $i$ (to any other state) in time $h$ is proportional to the overall escape velocity $v_i$, plus terms of order $h^2$ and higher. We thus have the following results:
+$$ P_{i \rightarrow j}'(0) = \lim_{h \rightarrow 0} \frac{P_{i \rightarrow j} (h)}{h} =   \lim_{h \rightarrow 0} \frac{h \lambda_{i \rightarrow j} + o(h^2)}{h} = \lambda_{i \rightarrow j}$$
+
+$$ P_{i \rightarrow i}'(0)= \lim_{h \rightarrow 0} \frac{1 - P_{i \rightarrow i} (h)}{h} =  \lim_{h \rightarrow 0} \frac{h v_i+ o(h^2)}{h} =  v_i $$
+\subsection{Backward equation}
+From the above expressions, we can write down an approximation for the time derivative of the transition probabilities:
+$$P_{i \rightarrow j}(h + t) - P_{i \rightarrow j}(t) =  \sum_{k=0}^{\infty} P_{i \rightarrow k}(t)P_{k \rightarrow j}(s)  -  P_{i\rightarrow j}(t) = \sum_{k \neq i }^{\infty} P_{i \rightarrow k}(t)P_{k \rightarrow j}(s)  - (1- P_{i\rightarrow i}(h))  P_{i \rightarrow j}(t)  $$
+Dividing both sides by $h$ and taking the limit as $h$ vanishes, we obtain the following equation knows as the \emph{backward (Kolmogorov) equation:}
+$$ P'_{i \rightarrow j} (t) =  \sum_{k \neq i} \lambda_{i \rightarrow k} P_{k \rightarrow j}(t)  - \sum_{k \neq i}  \lambda_{i \rightarrow k}  P_{i  \rightarrow j}(t)  =   
+ \sum_{k \neq i} \lambda_{i \rightarrow k} P_{k \rightarrow j}(t)  - v_i  P_{i  \rightarrow j}(t) $$
+where $ v_i = \sum_k  \lambda_{j \rightarrow k} $, as defined above.
+
+The backward equation relates the probabilities of transition from state $i$ to $j$ to the rates of transition from $i$ to the intermediate states $k$, multiplied by the transition probabilities from $k$ to $j$. Given the probability distribution at the \emph{present time} $P(X(t) = j)$, the differential equation can be solved to find the initial distribution at time $0$, $P(X(0) = i)$.
+
+\subsection{Forward equation}
+Starting from the Chapman-Kolmogorov equation and using the same limiting process as above, we can derive another equation for the time-dependent transition probabilities, called the \emph{forward (Kolmogorov) equation}:
+$$ P'_{i \rightarrow j} (t) =  \sum_{k \neq j} P_{i  \rightarrow k}(t) \lambda_{k \rightarrow j}  - \sum_{k \neq j} P_{i \rightarrow j}(t) \lambda_{j \rightarrow k} = 
+ \sum_{k \neq j}	P_{i  \rightarrow k}(t) \lambda_{k \rightarrow j}  - v_j P_{i \rightarrow j}(t)$$
+
+The significance of the forward equation is that it relates the probabilities of transition from state $i$ to $j$ to the transition probabilities from $i$ to intermediate states $k$, multiplied by the transition rates from $k$ to the final state $j$. Thus, given an initial probability distribution $P(X(0) = i)$ we can multiply the conditional probabilities in the equation and solve the differential equation for the probability distribution at the present time $P(X(t) = j)$.
+
+\subsection{Example: linear birth process (Yule)}
+Let us construct the forward and backward equations for the linear birth process with individual reproduction rate $\lambda$. Each state $i$ stands for the population having $i$ individuals at the present time. The transition rate from state $i-1$ to state $i$ is $(i-1)\lambda$ and the transition rate from state $i$ to state $i-1$ is $i \lambda$. 
+
+For the backward equation, we need the transition rate from the initial state $i$ to an intermediate state $i+1$ ($\lambda i $), and the escape rates from the initial state $i$ (also  $\lambda i $), which results in the following equation:
+$$ P'_{i \rightarrow j} (t) =  \lambda i P_{i+1 \rightarrow j}(t)  -  \lambda i  P_{i  \rightarrow j}(t) = i \lambda [P_{i+1 \rightarrow j}(t) -  P_{i  \rightarrow j}(t)] $$
+
+For the forward equation, we need the transition rate from the intermediate state $j-1$ to the final state $j$ $\lambda (j-1) $, and the escape rates from the final state $j$ ($\lambda j $), which results in the following equation:
+$$ P'_{i \rightarrow j} (t) = P_{i \rightarrow j-1}(t)  \lambda (j-1)  -  \lambda j  P_{i  \rightarrow j}(t) = \lambda[(j-1)P_{i \rightarrow j-1}(t) -  j  P_{i  \rightarrow j}(t) ]$$
+
+There are forward and backward equations for every state, so there are infinitely many differential equations for the infinite-dimensional Yule process. One can use the equation for the zero state to solve the equation for the first state, etc, and to generate a recursive solution. In the next example, we see that for a finite-dimensional process, the solutions can be found explicitly.
+
+\subsection{Example: two state-gate}
+Suppose a gate (e.g in a membrane channel) opens and closes with rates $\lambda_o$ (closed to open) and $\lambda_c$ (open to closed). The corresponding forward equations are:
+$$ P'_{o \rightarrow c}(t) = \lambda_c P_{o \rightarrow o}(t) - \lambda_o P_{o \rightarrow c}(t)$$
+$$ P'_{c \rightarrow c}(t) = \lambda_o P_{c \rightarrow o}(t) - \lambda_c P_{c \rightarrow c}(t)$$
+$$ P'_{o \rightarrow o}(t) = \lambda_c P_{o \rightarrow c}(t) - \lambda_o P_{o \rightarrow o}(t)$$
+$$ P'_{c \rightarrow o}(t) =  \lambda_o P_{c \rightarrow c}(t) -\lambda_c P_{c \rightarrow o}(t)$$
+Since the probability distributions add up to 1, we have $P_{o \rightarrow c} = 1 - P_{o \rightarrow o} $ and $P_{c \rightarrow o} = 1 - P_{c \rightarrow c} $. This lets us write down two uncoupled equations:
+$$  P'_{c \rightarrow c} = \lambda_o (1- P_{c \rightarrow c}) - \lambda_c  P_{c \rightarrow c} = -(\lambda_o  + \lambda_c)P_{c \rightarrow c} +  \lambda_o $$
+$$  P'_{o \rightarrow o} = \lambda_c (1- P_{o \rightarrow o}) - \lambda_o P_{o \rightarrow o} = -(\lambda_o  + \lambda_c)P_{o \rightarrow o} + \lambda_c $$
+The solutions for these linear inhomogeneous equations are found, using the initial conditions $ P_{c \rightarrow c}(0) = P_{o \rightarrow o}(0) = 1$:
+$$ P_{c \rightarrow c} (t) = \left(1 - \frac{\lambda_c}{\lambda_o  + \lambda_c} \right) e^{-(\lambda_o  + \lambda_c)t} + \frac{\lambda_c}{\lambda_o  + \lambda_c} $$
+$$ P_{o \rightarrow o} (t) = \left(1 - \frac{\lambda_o}{\lambda_o  + \lambda_c} \right) e^{-(\lambda_o  + \lambda_c)t} + \frac{\lambda_o}{\lambda_o  + \lambda_c} $$
+This means we can also find the solutions to the other two transition probabilities, using $P_{o \rightarrow c} = 1 - P_{o \rightarrow o} $ and $P_{c \rightarrow o} = 1 - P_{c \rightarrow c} $
+$$ P_{o \rightarrow c} (t) = \frac{\lambda_c}{\lambda_o  + \lambda_c} \left(1 - e^{-(\lambda_o  + \lambda_c)t}  \right)  $$
+$$ P_{c \rightarrow o} (t) = \frac{\lambda_o}{\lambda_o  + \lambda_c}\left(1 - e^{-(\lambda_o  + \lambda_c)t}  \right) $$
+Note that as time goes to infinity, the probabilities of being state $c$ converge to $\lambda_c /(\lambda_o  + \lambda_c)$, regardless of the initial condition, and similarly, the probabilities of being state $o$ converge to $\lambda_o /(\lambda_o  + \lambda_c)$
+ 
+\subsection{Limiting probabilities and balance equations}
+Most reasonable Markov processes converge to a stable probability distribution as time goes on. These are called limiting probabilities, and we will denote the limiting probability of being in state $i$ by $P_i$. 
+
+When limiting probability is reached, the time derivatives of the transition probabilities are 0, since they are stationary. Therefore, the forward  equations provide us with a set of \emph{balance equations} for the limiting probabilities:
+$$ 0 =  \sum_{k \neq j}P_{k} \lambda_{k \rightarrow j}  - v_j P_{ j}$$
+The limiting probabilities also have to add up to 1, so we have:
+$$ \sum_j P_{j} = 1$$
+Together, this set of equations may be solved to find the limiting probabilities. \\
+\textbf{Example:} For the open/closed gate above, the balance equations are:
+$$ 0 = P_o \lambda_c - P_c \lambda_o; \;  0 =  P_c \lambda_o - P_o \lambda_c $$
+These two equations are redundant, but together with the probability requirement $P_o + P_c = 1$, they lead to the following solutions:
+$$ P_c = \frac{\lambda_c}{\lambda_o  + \lambda_c}; \; P_o =  \frac{\lambda_o}{\lambda_o  + \lambda_c} $$
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
