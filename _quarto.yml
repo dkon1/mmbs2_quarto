@@ -23,5 +23,6 @@ format:
     code-fold: false   
   pdf:
     documentclass: scrreprt
-
+pdf-engine: pdflatex
+latex-auto-install: true
 jupyter: python3

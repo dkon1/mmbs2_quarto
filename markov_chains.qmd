@@ -298,7 +298,7 @@ Evolution of base distribution for different substitution rates, with
 bar graphs showing proportion of letters A, G, T, C from generation 0 to
 20 :::
 
-#### calculation of phylogenetic distances}
+#### calculation of phylogenetic distances
 
 As we saw, the Markov model provides a means of measuring the
 time-dependent evolution of the probability distribution of each letter,
@@ -325,25 +325,36 @@ separately, and each matrix multiplication is a multiplication by the
 appropriate eigenvalue. Thus,
 
 $$ 
-P_t = M^t P_0 =   1^t \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) + (1-4/3\alpha)^t\left( \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) +  \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) \right)
-$$ The first element of $P_t$ is the probability of a nucleotide
-remaining $A$ after $t$ generation, and it is:
-$P_t (A ) = 1/4 +3/4(1-4/3\alpha)\^t$. For $t=0$, the probability is 1,
-as it should be, and as $t \rightarrow \infty$,
-$P_t (A) \rightarrow 1/4$, since this is the equilibrium probability
-distribution. Note that the expression is the same for all the other
-letters, so we have found the expression for any nucleotide remaining
-the same after $t$ generations.
+P_t = M^t P_0 =   1^t \left(\begin{array}{c} 1/4 \\ 1/4 \\ 1/4 \\ 1/4 \end{array}\right) + (1-\frac{4}{3}\alpha)^t\left( \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) +  \left(\begin{array}{c} 1/4 \\ -1/4 \\ -1/4 \\ 1/4 \end{array}\right) + \left(\begin{array}{c} 1/4 \\ -1/4 \\ 1/4 \\ -1/4 \end{array}\right) \right)
+$$
+
+The first element of $P_t$ is the probability of a nucleotide remaining
+$A$ after $t$ generation, and it is:
+
+$$
+P_t(A) = \frac{1}{4} + \frac{3}{4}\left(1-\frac{4}{3}\alpha\right)^t
+$$
+
+For $t=0$, the probability is 1, as it should be, and as
+$t \rightarrow \infty$, $P_t(A) \rightarrow 1/4$, since this is the
+equilibrium probability distribution. Note that the expression is the
+same for all the other letters, so we have found the expression for any
+nucleotide remaining the same after $t$ generations.
 
 Now let us get to the question of calculating the time that two
 sequences have evolved from each other. Denote by $m$ the fraction of
 sites in two aligned sequences with different letters, and $q$ is the
 probability of a nucleotide remaining the same, which is the given by
 the expression for $P_t(A)$. Thus
-$m = 1 - q = 3/4 - 3/4(1-4/3\alpha)^t$. This can be solved for $t$:
+
+$$
+m = 1 - q = \frac{3}{4} - \frac{3}{4}\left(1-\frac{4}{3}\alpha\right)^t
+$$.
+
+This can be solved for $t$:
 
 $$ 
-t = \frac{\log (1 - 4/3 m)}{\log (1 -4/3 \alpha)}
+t = \frac{\log (1 - \frac{4}{3}m)}{\log (1 - \frac{4}{3} \alpha)}
 $$
 
 However, we do not necessarily know the mutation rate $\alpha$, so this
@@ -360,12 +371,12 @@ sequence to revert to its initial letter.
 Now, let us assume $\alpha$ is small, as typically the number of
 substitutions per generation per nucleotide is small. Then, by a Taylor
 expansion of the logarithm around 1,
-$\log (1 -4/3 \alpha) \approx - 4/3\alpha$. Using the formula for $t$
-from above with this approximation, we find the Jukes-Cantor
-phylogenetic distance to be:
+$\log (1 -\frac{4}{3} \alpha) \approx - \frac{4}{3}\alpha$. Using the
+formula for $t$ from above with this approximation, we find the
+Jukes-Cantor phylogenetic distance to be:
 
 $$ 
-d_{JC} = \frac{\log (1 - 4/3 m)}{ -4/3 \alpha} \alpha =  -\frac{3}{4}\log (1 - 4/3 m)
+d_{JC} = \frac{\log (1 - \frac{4}{3}m)}{ - \frac{4}{3} \alpha} \alpha =  -\frac{3}{4}\log (1 - \frac{4}{3} m)
 $$
 
 This formula has the correct behavior in the two limits: when $m = 0$,

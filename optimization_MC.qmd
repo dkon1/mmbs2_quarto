@@ -25,9 +25,9 @@ vicinity of the initial guess. Here is the outline of the method:
     accept the new state with probability
     $P = e^{f(\vec x_{i-1}) - f(\vec x_i)}$.
 
-4.  Repeat until the algorithm no longer seems to improve the
-    predictions: usually, until a maximum number of consecutive
-    rejections is reached.
+4.  Repeat until the algorithm no longer improves the objective
+    function: usually, until a maximum number of consecutive rejections
+    is reached.
 
 The fact that the Monte Carlo algorithm sometimes will accept a worse
 (in term of the objective function) new candidate state means that it is
@@ -47,7 +47,7 @@ which the variables have only discrete domains. A famous example is the
 order of visiting $N$ cities, with optimal meaning the order with the
 lowest total distance traveled. This seemingly simple problem has no
 efficient algorithm for solving it exactly - it belongs to a class of
-problems known as \`\`NP-complete'' (I will not attempt to explain the
+problems known as "NP-complete" (I will not attempt to explain the
 terminology here). All exact methods for solving the TSP are as
 inefficient as the brute force method of considering every possible
 order of visiting the cities, calculating the total distance of each,
